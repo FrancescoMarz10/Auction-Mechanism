@@ -1,2 +1,25 @@
-# Auction-Mechanism
-Auction mechanism based on P2P Network. Each peer can sell and buy goods using a Second-Price Auctions (EBay). second-price auction is a non-truthful auction mechanism for multiple items. Each bidder places a bid. The highest bidder gets the first slot, the second-highest, the second slot and so on, but the highest bidder pays the price bid by the second-highest bidder, the second-highest pays the price bid by the third-highest, and so on. The systems allows the users to create new auction (with an ending time, a reserved selling price and a description), check the status of an auction, and eventually place new bid for an auction. As described in the AuctionMechanism Java API.
+# Auction Mechanism
+Ogni peer può vendere e acquistare beni utilizzando un meccanismo di Second-Price Auction. Ogni partecipante all'asta fa un'offerta, il migliore offerente vince l'asta e paga il prezzo della seconda offerta più alta. Il sistema permette agli utenti di:
+
+1. Creare nuove aste
+2. Verificare lo stato di un'asta
+3. Effettuare una nuova offerta per un'asta
+
+# Autore
+Marzullo Francesco
+
+# Implementazione
+La classe Auction è costituita dalle seguenti variabili di istanza:
+
+- _auction_name, il nome dell'asta
+- _creator, l'id del peer creatore dell'asta
+- _end_time, data e ora di scadenza dell'asta
+- _reserved_price, il tempo di partenza
+- max_bid, la migliore offerta ricevuta
+- bid_id, l'id del miglior offerente
+- peerAddress_bid, il peer address del miglior offerente
+- old_bid_Address, il peer address del precedente miglior offerente
+- _description, descrizione del prodotto messo all'asta
+- users, lista di peer partecipanti all'asta
+
+
