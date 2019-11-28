@@ -72,3 +72,11 @@ public class Auction implements Serializable {
 }
 
 ```
+
+## Interfaccia AuctionMechanism
+L'interfaccia AuctionMechanism è costituita dai seguenti metodi:
+
+1. createAuction: per creare un'asta
+2. checkAuction: per verificare lo stato dell'asta
+3. placeAbid: per fare un'offerta
+
