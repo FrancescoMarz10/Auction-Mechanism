@@ -120,10 +120,10 @@ Il metodo checkAuction prende in input solo il nome dell'asta da ricercare con l
 
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista di aste all'interno della dht
-2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista, altrimenti ne crea una nuova da caricare successivamente nella dht.
-3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro.
-4. Nel caso in cui l'esito della ricerca abbia esito affermativo la funzione controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza.
-5. In entrambi i casi restituisce lo stato dell'asta, mostrando l'eventuale vincitore o l'offerta maggiore e tutte le relative informazioni.
+2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista, altrimenti ne crea una nuova da caricare successivamente nella dht
+3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
+4. Nel caso in cui l'esito della ricerca abbia esito affermativo la funzione controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
+5. In entrambi i casi restituisce lo stato dell'asta, mostrando l'eventuale vincitore o l'offerta maggiore e tutte le relative informazioni
 
 ##### Implementazione
 ```
@@ -177,7 +177,12 @@ Tale funzione si sviluppa attraverso i seguenti step:
 Il metodo placeABid prende in input il nome dell'asta ed il valore dell'offerta che si desidera presentare.
 
 Tale funzione si sviluppa attraverso i seguenti step:
-1. 
+1. Ricerca la presenza della lista di aste all'interno della dht
+2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista, altrimenti ne crea una nuova da caricare successivamente nella dht
+3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
+4. Nel caso in cui l'esito della ricerca abbia esito affermativo la funzione controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
+5. Nel caso in cui l'asta fosse ancora attiva, chi la propone non è il creatore dell'asta e la nuova offerta supera quella attuale aggiorna tutte le informazioni relative alla nuova proposta ed al suo autore.
+6. Aggiorna l'asta all'interno della dht così da rendere le modifiche visibili a tutti i peer.
 
 ##### Implementazione
 
@@ -246,4 +251,6 @@ public String placeAbid(String _auction_name, double _bid_amount) throws IOExcep
         }
         return null;
     }
-    
+```
+
+## Altri metodi implementati
