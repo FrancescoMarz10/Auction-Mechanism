@@ -114,3 +114,54 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
         return false;
     }
 ```
+
+#### Metodo checkAuction
+
+##### Implementazione
+```
+ public String checkAuction(String _auction_name) throws IOException, ClassNotFoundException {
+
+        FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+        futureGet.awaitUninterruptibly();
+
+        if (futureGet.isSuccess()) {
+            if (futureGet.isEmpty()) {
+                dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
+                return null;
+            }
+            
+            HashMap<String, Auction> auctions;
+            auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+            
+            if(auctions.containsKey(_auction_name)) {
+                Auction auction = auctions.get(_auction_name);
+                Date actual_date = new Date();
+
+                if (actual_date.after(auction.get_end_time())) {
+                    if(auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())){
+                        return "The Auction is ended with no winner!";
+                    }
+                    else{
+                        if(auction.getBid_id()==peer_id){
+                            return "The Auction is ended and the winner is you, " + auction.getBid_id() + ", with this bid: " + auction.getMax_bid() +" and the price is " + auction.getSecond_max_bid();
+                        }
+                        else return "The Auction is ended and the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid()+" and the price is " + auction.getSecond_max_bid();
+                    }
+
+                } else {
+                    if(auction.getUsers().isEmpty()){
+                        return "The auction is active until "+ auction.get_end_time()+" and the reserved price is: " + auction.get_reserved_price();
+                    }
+                    else {
+                        if(auction.getBid_id()==peer_id){
+                            return "The auction is active until "+ auction.get_end_time()+" and the highest offer is yours with: " + auction.getMax_bid();
+                        }
+                        else return "The auction is active until "+ auction.get_end_time()+" and the highest offer is: " + auction.getMax_bid();
+                    }
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+```
