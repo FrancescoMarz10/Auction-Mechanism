@@ -74,9 +74,43 @@ public class Auction implements Serializable {
 ```
 
 ## Interfaccia AuctionMechanism
-L'interfaccia AuctionMechanism è costituita dai seguenti metodi:
+L'interfaccia fornita per lo sviluppo del progetto AuctionMechanism è costituita dai seguenti metodi:
 
 1. createAuction: per creare un'asta
 2. checkAuction: per verificare lo stato dell'asta
 3. placeAbid: per fare un'offerta
 
+### Metodo createAuction
+Il metodo createAuction prende in input i seguenti valori:
+    - _auction_name, nome dell'asta
+    - _end_time, tempo di terminazione dell'asta
+    - _reserved_price, prezzo di partenza dell'asta
+    - _description, descrizione dell'oggetto in asta
+    
+Tale funzione si sviluppa attraverso i seguenti step:
+1. Controlla che non sia già esistente un asta con il medesimo nome 
+2. Crea una nuova asta con tutti parametri ricevuti.
+3. Ricerca la presenza della lista di aste all'interno della dht.
+    3.1 . In caso affermativo ottiene tale lista, aggiunge l'asta ad essa e la ricarica nella dht. 
+    
+### Implementazione 
+```
+public boolean createAuction(String _auction_name, Date _end_time, double _reserved_price, String _description) throws IOException, ClassNotFoundException {
+
+        if(checkAuction(_auction_name) == null){
+
+            Auction auction = new Auction(_auction_name,  peer_id,_end_time, _reserved_price,_description);
+            FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+
+            futureGet.awaitUninterruptibly();
+            if (futureGet.isSuccess()) {
+               auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+            }
+            
+            auctions.put(_auction_name,auction);
+            dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
+            return true;
+        }
+        return false;
+    }
+```
