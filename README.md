@@ -80,7 +80,7 @@ L'interfaccia fornita per lo sviluppo del progetto AuctionMechanism è costituit
 2. checkAuction: per verificare lo stato dell'asta
 3. placeAbid: per fare un'offerta
 
-### Metodo createAuction
+#### Metodo createAuction
 Il metodo createAuction prende in input i seguenti valori:
     - _auction_name, nome dell'asta
     - _end_time, tempo di terminazione dell'asta
@@ -91,9 +91,9 @@ Tale funzione si sviluppa attraverso i seguenti step:
 1. Controlla che non sia già esistente un asta con il medesimo nome 
 2. Crea una nuova asta con tutti parametri ricevuti.
 3. Ricerca la presenza della lista di aste all'interno della dht.
-    3.1 . In caso affermativo ottiene tale lista, aggiunge l'asta ad essa e la ricarica nella dht. 
+4. In caso affermativo ottiene tale lista, aggiunge l'asta ad essa e la ricarica nella dht. 
     
-### Implementazione 
+##### Implementazione 
 ```
 public boolean createAuction(String _auction_name, Date _end_time, double _reserved_price, String _description) throws IOException, ClassNotFoundException {
 
