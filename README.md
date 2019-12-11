@@ -178,7 +178,7 @@ Il metodo placeABid prende in input il nome dell'asta ed il valore dell'offerta 
 
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista di aste all'interno della dht
-2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista, altrimenti ne crea una nuova da caricare successivamente nella dht
+2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
 3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
 4. Nel caso in cui l'esito della ricerca abbia esito affermativo la funzione controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
 5. Nel caso in cui l'asta fosse ancora attiva, chi la propone non è il creatore dell'asta e la nuova offerta supera quella attuale aggiorna tutte le informazioni relative alla nuova proposta ed al suo autore.
@@ -254,3 +254,150 @@ public String placeAbid(String _auction_name, double _bid_amount) throws IOExcep
 ```
 
 ## Altri metodi implementati
+
+#### Metodo sendMessage
+Il metodo sendMessage viene utilizzato per notificare un peer che la sua offerta è stata appena superata da una nuova proposta di valore maggiore.
+Questo metodo prende in input il messaggio da recapitare e il nome dell'asta a cui fa riferimento.
+
+Tale funzione si sviluppa attraverso i seguenti step:
+1. Ricerca la presenza della lista di aste all'interno della dht
+2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
+3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
+4. Scorre la lista dei peer che hanno partecipato all'asta e invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno.
+
+
+#####Implementazione
+```
+public boolean sendMessage(Object _obj,String _auction_name) throws IOException, ClassNotFoundException {
+
+        FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+        futureGet.awaitUninterruptibly();
+
+        if (futureGet.isSuccess()) {
+            Collection<Data> dataMapValues = futureGet.dataMap().values();
+            HashMap<String, Auction> auctions;
+            if (dataMapValues.isEmpty()) {
+                return false;
+            } else {
+                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+            }
+            if (auctions.containsKey(_auction_name)) {
+                Auction auction = auctions.get(_auction_name);
+                HashSet<PeerAddress> users = auction.getUsers();
+                for (PeerAddress  mypeer : users) {
+                    if(mypeer.equals(auction.getOld_bid_Address()) && users.size()>1) {
+                        FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                        futureDirect.awaitUninterruptibly();
+                    }
+
+                }
+            }
+        }
+        return true;
+    }
+    
+```
+
+#### Metodo  checkAllAuctions
+Il metodo checkAllAuctions viene utilizzato per ottenere la completa lista delle aste attualmente presenti e alcune informazioni fondamentali ad esse relate, come lo stato e l'attuale migliore offerta.
+
+Tale funzione si sviluppa attraverso i seguenti step:
+1. Ricerca la presenza della lista di aste all'interno della dht
+2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
+3. Scorrendo l'intera lista delle aste presenti en controlla la scadenza e setta di conseguenza la variabile status relativa ad ognuna come 'ENDED' o 'ACTIVE'
+4. Costrusice la stringa contenente tutte le aste presenti con le relative informazioni di base e la restituisce
+
+#####Implementazione
+```
+ public String checkAllAuctions() throws IOException, ClassNotFoundException {
+
+        String all_auctions = "";
+        FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+        futureGet.awaitUninterruptibly();
+        String status = "";
+
+        if (futureGet.isSuccess()) {
+            if(!futureGet.dataMap().values().isEmpty()) {
+                HashMap<String, Auction> auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                if (!auctions.isEmpty()) {
+                    for (String name : auctions.keySet()) {
+
+                        Date actual_date = new Date();
+
+                        if (actual_date.after(auctions.get(name).get_end_time())) {
+                            status = "ENDED";
+                        }
+                        else{
+                            status = "ACTIVE";
+                        }
+                        if(auctions.get(name).getUsers().isEmpty()){
+                            all_auctions += "Name: " + name + ", Reserved Price: " + auctions.get(name).getMax_bid() +", Status: "+status+ ", Description: " + auctions.get(name).get_description()+ "\n";
+
+                        }
+                        else{
+                            all_auctions += "Name: " + name + ", Best Bid: " + auctions.get(name).getMax_bid() +", Status: "+status+ ", Description: " + auctions.get(name).get_description()+ "\n";
+                        }
+
+                    }
+                    return all_auctions;
+                }
+            }
+        }
+        return null;
+    }
+```
+
+#### Metodo removeAnAuction
+Il metodo removeAnAuction permette al creatore di un asta, utilizzandone il nome ottenuto come parametro, di eliminarla.
+
+Tale funzione si sviluppa attraverso i seguenti step:
+1. Ricerca la presenza della lista di aste all'interno della dht
+2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
+3. Scorrendo l'intera lista delle aste si ricerca quella con il nome corrispondente al parametro ricevuto e, dopo aver controllato se è il creatore a richiamare il metodo, si elimina dalla lista
+4. La lista modificata viene ricaricata nella dht
+
+
+#####Implementazione
+```
+ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNotFoundException {
+        FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+        futureGet.awaitUninterruptibly();
+
+        if (futureGet.isSuccess()) {
+            Collection<Data> dataMapValues = futureGet.dataMap().values();
+
+            HashMap<String, Auction> auctions;
+            if(dataMapValues.isEmpty()){
+                return false;
+            }
+            else{
+                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+            }
+
+            for (String name : auctions.keySet()) {
+                if (name.equals(_auction_name) && auctions.get(name).get_creator()==peer_id ) {
+                    auctions.remove(name);
+                    dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }   
+ ```
+ 
+ #### Metodo exit
+ Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema.
+ 
+ #### Implementazione
+ ```
+ public boolean exit(){
+        try {
+            dht.peer().announceShutdown().start().awaitUninterruptibly();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+ ```
