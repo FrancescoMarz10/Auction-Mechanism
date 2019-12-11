@@ -116,6 +116,14 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
 ```
 
 #### Metodo checkAuction
+Il metodo checkAuction prende in input solo il nome dell'asta da ricercare con l'obiettivo di verificarne la presenza all'interno della lista delle aste ed il suo eventuale stato.
+
+Tale funzione si sviluppa attraverso i seguenti step:
+1. Ricerca la presenza della lista di aste all'interno della dht
+2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista, altrimenti ne crea una nuova da caricare successivamente nella dht.
+3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro.
+4. Nel caso in cui l'esito della ricerca abbia esito affermativo la funzione controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza.
+5. In entrambi i casi restituisce lo stato dell'asta, mostrando l'eventuale vincitore o l'offerta maggiore e tutte le relative informazioni.
 
 ##### Implementazione
 ```
@@ -165,3 +173,77 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
         return null;
     }
 ```
+#### Metodo placeABid
+Il metodo placeABid prende in input il nome dell'asta ed il valore dell'offerta che si desidera presentare.
+
+Tale funzione si sviluppa attraverso i seguenti step:
+1. 
+
+##### Implementazione
+
+```
+public String placeAbid(String _auction_name, double _bid_amount) throws IOException, ClassNotFoundException {
+        FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+        futureGet.awaitUninterruptibly();
+
+        if (futureGet.isSuccess()) {
+
+            Collection<Data> dataMapValues = futureGet.dataMap().values();
+
+            HashMap<String, Auction> auctions;
+            if(dataMapValues.isEmpty()){
+                return null;
+            }
+            else{
+                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+            }
+
+            if (auctions.containsKey(_auction_name)) {
+                Auction auction = auctions.get(_auction_name);
+                Date actual_date = new Date();
+
+                if(auction.get_creator()== peer_id){
+                    return "The creator can't do a bid!";
+                }
+                if(auction.getBid_id() == peer_id){
+                    return "You have already offered the highest bid!";
+                }
+
+                if (actual_date.after(auction.get_end_time())) {
+                    if(auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())){
+                        return "You can't do a bid! The Auction is ended with no winner!";
+                    }
+                    else{
+                        return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid()+" and the price is " + auction.getSecond_max_bid();
+                    }
+
+                } else if (_bid_amount > auction.getMax_bid()) {
+
+                    auction.setSecond_max_bid(auction.getMax_bid());
+                    auction.setMax_bid(_bid_amount);
+
+                    auction.setOld_bid_Address(auction.getPeerAddress_bid());
+                    auction.setPeerAddress_bid(peer.peerAddress());
+
+                    auction.setBid_id(peer_id);
+
+                    if (!auction.getUsers().contains(peer_id)) {
+                        auction.getUsers().add(peer.peerAddress());
+                        auction.setPeerAddress_bid(peer.peerAddress());
+                    }
+
+                    auctions.put(_auction_name, auction);
+
+                    dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
+                    sendMessage("The new best bid on the "+ _auction_name+" auction is "+auction.getMax_bid()+" by "+ auction.getBid_id(),_auction_name);
+
+                    return "The auction is active until "+ auction.get_end_time()+" and the highest offer is yours with: " + auction.getMax_bid();
+                }
+                else {
+                    return "You can't do a bid lesser then the biggest bid!";
+                }
+            }
+        }
+        return null;
+    }
+    
