@@ -266,7 +266,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
 4. Scorre la lista dei peer che hanno partecipato all'asta e invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno.
 
 
-#####Implementazione
+##### Implementazione
 ```
 public boolean sendMessage(Object _obj,String _auction_name) throws IOException, ClassNotFoundException {
 
@@ -307,7 +307,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
 3. Scorrendo l'intera lista delle aste presenti en controlla la scadenza e setta di conseguenza la variabile status relativa ad ognuna come 'ENDED' o 'ACTIVE'
 4. Costrusice la stringa contenente tutte le aste presenti con le relative informazioni di base e la restituisce
 
-#####Implementazione
+##### Implementazione
 ```
  public String checkAllAuctions() throws IOException, ClassNotFoundException {
 
@@ -357,7 +357,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
 4. La lista modificata viene ricaricata nella dht
 
 
-#####Implementazione
+##### Implementazione
 ```
  public boolean removeAnAuction(String _auction_name) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
