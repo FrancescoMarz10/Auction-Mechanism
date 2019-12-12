@@ -403,3 +403,40 @@ Tale funzione si sviluppa attraverso i seguenti step:
  ```
  
  # Testing
+ I casi di test analizzati sono i seguenti:
+ 1. Offerta realizzata dal creatore dell'asta
+ 2. Offerta realizzata dall'attuale maggior offerente
+ 3. Offerta realizzata dopo la scadenza dell'asta
+ 4. Rimozione di un asta (diversi casi)
+ 5. Asta terminata senza offerte
+ 6. Asta con e senza vincitore
+ 7. Creazione di un asta già presente
+ 
+ ### placeABidAsCreator()
+  ```
+  void placeABidAsCreator(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Notebook MSI", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1500, "A notebook is a small, portable personal computer (PC)");
+            assertEquals(peer0.placeAbid("Notebook MSI", 1500), "The creator can't do a bid!");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+ ```
+ 
+ 
+ 
+
+    //place a bid (all cases) -
+    //bid by a creator -
+    //bid by the big offerer -
+    //remove an auction -
+    //bid when auction is ended -
+    //no winner and winner -
+    //messages?
+    //aucton without offers -
+    //leave auction???
+    //multiple bids -
+    //see all auctions -
