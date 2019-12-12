@@ -82,6 +82,7 @@ L'interfaccia fornita per lo sviluppo del progetto AuctionMechanism è costituit
 
 #### Metodo createAuction
 Il metodo createAuction prende in input i seguenti valori:
+
     - _auction_name, nome dell'asta
     - _end_time, tempo di terminazione dell'asta
     - _reserved_price, prezzo di partenza dell'asta
