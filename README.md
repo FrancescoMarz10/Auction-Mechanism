@@ -402,17 +402,16 @@ Tale funzione si sviluppa attraverso i seguenti step:
     }
  ```
  
- # Testing
+# Testing
  I casi di test analizzati sono i seguenti:
  1. Offerta realizzata dal creatore dell'asta
  2. Offerta realizzata dall'attuale maggior offerente
  3. Offerta realizzata dopo la scadenza dell'asta
  4. Rimozione di un asta (diversi casi)
- 5. Asta terminata senza offerte
- 6. Asta con e senza vincitore
- 7. Creazione di un asta già presente
+ 5. Asta con e senza vincitore
+ 6. Creazione di un asta già presente
  
- ### 1.placeABidAsCreator()
+### 1.placeABidAsCreator()
   ```
   void placeABidAsCreator(){
         try {
@@ -425,9 +424,9 @@ Tale funzione si sviluppa attraverso i seguenti step:
         }
     }
  ```
- ### 2. placeABidAsBestOfferer()
+### 2.placeABidAsBestOfferer()
 ```
-    void placeABidAsBestOfferer(){
+void placeABidAsBestOfferer(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook MSI", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1500, "A notebook is a small, portable personal computer (PC)");
@@ -437,19 +436,75 @@ Tale funzione si sviluppa attraverso i seguenti step:
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+ }
 ```
- 
- 
 
-    //place a bid (all cases) -
-    //bid by a creator -
-    //bid by the big offerer -
-    //remove an auction -
-    //bid when auction is ended -
-    //no winner and winner -
-    //messages?
-    //aucton without offers -
-    //leave auction???
-    //multiple bids -
-    //see all auctions -
+### 3.placeAnOutdatedBid()
+```
+ void placeAnOutdatedBid(){
+        try {
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2010");
+            date.setHours(11);
+            date.setMinutes(30);
+
+            peer0.createAuction("OnePlus", date, 800, "New Android Smartphone");
+            assertEquals(peer1.placeAbid("OnePlus", 1000), "You can't do a bid! The Auction is ended with no winner!");
+            Thread.sleep(1500);
+            assertEquals(peer0.checkAuction("OnePlus"), "The Auction is ended with no winner!");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+  }
+ ```
+ 
+### 4.removeABid()
+```
+void removeABid(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Notebook HP", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1300, "A notebook is a small, portable personal computer (PC)");
+            assertEquals(peer0.removeAnAuction("Notebook HP"), true);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+}
+```
+
+### 5.auctionWithAWinner() and auctionWithNoWinner()
+// MANCA IL WINNER
+```
+void auctionWithNoWinner(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Nintendo Switch", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 300, "Nintendo Switch is a hybrid console between a portable and a home gaming system");
+            Thread.sleep(2000);
+            assertEquals(peer0.checkAuction("Nintendo Switch"),"The Auction is ended with no winner!");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+}
+```
+
+### 6.DuplicateAuctionError()
+```
+void DuplicateAuctionError() {
+        try {
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2030");
+            date.setHours(11);
+            date.setMinutes(30);
+            assertTrue(peer0.createAuction("Iphone 11", date, 800, "New Apple Smartphone"));
+            assertFalse(peer0.createAuction("Iphone 11", date, 800, "New Apple Smartphone"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+ }
+ ```
+
