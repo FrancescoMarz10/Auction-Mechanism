@@ -412,7 +412,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
  5. Asta con e senza vincitore
  6. Creazione di un asta già presente
  
-### 1.placeABidAsCreator()
+### 1. placeABidAsCreator()
   ```
   void placeABidAsCreator(){
         try {
@@ -425,7 +425,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
         }
     }
  ```
-### 2.placeABidAsBestOfferer()
+### 2. placeABidAsBestOfferer()
 ```
 void placeABidAsBestOfferer(){
         try {
@@ -440,7 +440,7 @@ void placeABidAsBestOfferer(){
  }
 ```
 
-### 3.placeAnOutdatedBid()
+### 3. placeAnOutdatedBid()
 ```
  void placeAnOutdatedBid(){
         try {
@@ -461,7 +461,7 @@ void placeABidAsBestOfferer(){
   }
  ```
  
-### 4.removeABid()
+### 4. removeABid()
 ```
 void removeABid(){
         try {
@@ -475,7 +475,7 @@ void removeABid(){
 }
 ```
 
-### 5.auctionWithAWinner() and auctionWithNoWinner()
+### 5. auctionWithAWinner() and auctionWithNoWinner()
 // MANCA IL WINNER
 ```
 void auctionWithNoWinner(){
@@ -491,7 +491,7 @@ void auctionWithNoWinner(){
 }
 ```
 
-### 6.DuplicateAuctionError()
+### 6. duplicateAuctionError()
 ```
 void DuplicateAuctionError() {
         try {
