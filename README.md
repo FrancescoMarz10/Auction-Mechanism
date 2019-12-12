@@ -412,7 +412,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
  6. Asta con e senza vincitore
  7. Creazione di un asta già presente
  
- ### placeABidAsCreator()
+ ### 1.placeABidAsCreator()
   ```
   void placeABidAsCreator(){
         try {
@@ -425,7 +425,20 @@ Tale funzione si sviluppa attraverso i seguenti step:
         }
     }
  ```
- 
+ ### 2. placeABidAsBestOfferer()
+```
+    void placeABidAsBestOfferer(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Notebook MSI", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1500, "A notebook is a small, portable personal computer (PC)");
+            peer1.placeAbid("Notebook MSI", 1600);
+            assertEquals(peer1.placeAbid("Notebook MSI", 1800), "You have already offered the highest bid!");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+```
  
  
 
