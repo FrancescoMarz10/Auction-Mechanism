@@ -91,25 +91,24 @@ Il metodo createAuction prende in input i seguenti valori:
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Controlla che non sia già esistente un asta con il medesimo nome 
 2. Crea una nuova asta con tutti parametri ricevuti.
-3. Ricerca la presenza della lista di aste all'interno della dht.
-4. In caso affermativo ottiene tale lista, aggiunge l'asta ad essa e la ricarica nella dht. 
+3. Ricerca la presenza della lista dei nomoi delle aste all'interno della dht.
+4. In caso affermativo ottiene tale lista ed aggiunge il nome dell'asta ad essa e la ricarica nella dht. 
+5. Infine, carica l'intera asta nella dht.
     
 ##### Implementazione 
 ```
 public boolean createAuction(String _auction_name, Date _end_time, double _reserved_price, String _description) throws IOException, ClassNotFoundException {
 
         if(checkAuction(_auction_name) == null){
-
             Auction auction = new Auction(_auction_name,  peer_id,_end_time, _reserved_price,_description);
             FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
-
             futureGet.awaitUninterruptibly();
             if (futureGet.isSuccess()) {
-               auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
-            }
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             
-            auctions.put(_auction_name,auction);
-            dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
+            auctions_names.add(_auction_name);
+            dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
+            dht.put(Number160.createHash(_auction_name)).data(new Data(auction)).start().awaitUninterruptibly();
             return true;
         }
         return false;
@@ -120,133 +119,131 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
 Il metodo checkAuction prende in input solo il nome dell'asta da ricercare con l'obiettivo di verificarne la presenza all'interno della lista delle aste ed il suo eventuale stato.
 
 Tale funzione si sviluppa attraverso i seguenti step:
-1. Ricerca la presenza della lista di aste all'interno della dht
+1. Ricerca la presenza della lista dei nomi delle aste all'interno della dht
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista, altrimenti ne crea una nuova da caricare successivamente nella dht
 3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
-4. Nel caso in cui l'esito della ricerca abbia esito affermativo la funzione controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
+4. Nel caso in cui l'esito della ricerca abbia esito affermativo scarica l'oggetto 'Auction' corrispondente dalla dht
+5. La funzione, poi, controlla se l'asta è attiva o terminata, in base alla data e all'ora di scadenza
 5. In entrambi i casi restituisce lo stato dell'asta, mostrando l'eventuale vincitore o l'offerta maggiore e tutte le relative informazioni
 
 ##### Implementazione
 ```
- public String checkAuction(String _auction_name) throws IOException, ClassNotFoundException {
-
+public String checkAuction(String _auction_name) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
 
         if (futureGet.isSuccess()) {
             if (futureGet.isEmpty()) {
-                dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
+                dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
                 return null;
             }
             
-            HashMap<String, Auction> auctions;
-            auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+            auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             
-            if(auctions.containsKey(_auction_name)) {
-                Auction auction = auctions.get(_auction_name);
-                Date actual_date = new Date();
+            if(auctions_names.contains(_auction_name)) {
+                futureGet = dht.get(Number160.createHash(_auction_name)).start();
+                futureGet.awaitUninterruptibly();
 
-                if (actual_date.after(auction.get_end_time())) {
-                    if(auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())){
-                        return "The Auction is ended with no winner!";
-                    }
-                    else{
-                        if(auction.getBid_id()==peer_id){
-                            return "The Auction is ended and the winner is you, " + auction.getBid_id() + ", with this bid: " + auction.getMax_bid() +" and the price is " + auction.getSecond_max_bid();
-                        }
-                        else return "The Auction is ended and the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid()+" and the price is " + auction.getSecond_max_bid();
-                    }
+                if (futureGet.isSuccess()) {
+                        Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                        Date actual_date = new Date();
+                        if (actual_date.after(auction.get_end_time())) {
+                            if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                                return "The Auction is ended with no winner!";
+                            } else {
+                                if (auction.getBid_id() == peer_id) {
+                                    return "The Auction is ended and the winner is you, " + auction.getBid_id() + ", with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
+                                } else
+                                    return "The Auction is ended and the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
+                            }
 
-                } else {
-                    if(auction.getUsers().isEmpty()){
-                        return "The auction is active until "+ auction.get_end_time()+" and the reserved price is: " + auction.get_reserved_price();
-                    }
-                    else {
-                        if(auction.getBid_id()==peer_id){
-                            return "The auction is active until "+ auction.get_end_time()+" and the highest offer is yours with: " + auction.getMax_bid();
+                        } else {
+                            if (auction.getUsers().isEmpty()) {
+                                return "The auction is active until " + auction.get_end_time() + " and the reserved price is: " + auction.get_reserved_price();
+                            } else {
+                                if (auction.getBid_id() == peer_id) {
+                                    return "The auction is active until " + auction.get_end_time() + " and the highest offer is yours with: " + auction.getMax_bid();
+                                } else
+                                    return "The auction is active until " + auction.get_end_time() + " and the highest offer is: " + auction.getMax_bid();
+                            }
                         }
-                        else return "The auction is active until "+ auction.get_end_time()+" and the highest offer is: " + auction.getMax_bid();
                     }
-                }
             }
             return null;
         }
         return null;
     }
+
 ```
 #### Metodo placeABid
 Il metodo placeABid prende in input il nome dell'asta ed il valore dell'offerta che si desidera presentare.
 
 Tale funzione si sviluppa attraverso i seguenti step:
-1. Ricerca la presenza della lista di aste all'interno della dht
+1. Ricerca la presenza della lista dei nomi delle aste all'interno della dht
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
 3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
-4. Nel caso in cui l'esito della ricerca abbia esito affermativo la funzione controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
+4. Nel caso in cui l'esito della ricerca abbia esito affermativo, scarica l'asta corrispondente e controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
 5. Nel caso in cui l'asta fosse ancora attiva, chi la propone non è il creatore dell'asta e la nuova offerta supera quella attuale aggiorna tutte le informazioni relative alla nuova proposta ed al suo autore.
 6. Aggiorna l'asta all'interno della dht così da rendere le modifiche visibili a tutti i peer.
 
 ##### Implementazione
 
 ```
-public String placeAbid(String _auction_name, double _bid_amount) throws IOException, ClassNotFoundException {
+ public String placeAbid(String _auction_name, double _bid_amount) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
-
+        
         if (futureGet.isSuccess()) {
-
             Collection<Data> dataMapValues = futureGet.dataMap().values();
 
-            HashMap<String, Auction> auctions;
             if(dataMapValues.isEmpty()){
                 return null;
             }
             else{
-                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
+            if (auctions_names.contains(_auction_name)) {
+                futureGet = dht.get(Number160.createHash(_auction_name)).start();
+                futureGet.awaitUninterruptibly();
 
-            if (auctions.containsKey(_auction_name)) {
-                Auction auction = auctions.get(_auction_name);
-                Date actual_date = new Date();
-
-                if(auction.get_creator()== peer_id){
-                    return "The creator can't do a bid!";
-                }
-                if(auction.getBid_id() == peer_id){
-                    return "You have already offered the highest bid!";
-                }
-
-                if (actual_date.after(auction.get_end_time())) {
-                    if(auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())){
-                        return "You can't do a bid! The Auction is ended with no winner!";
+                if (futureGet.isSuccess()) {
+                    Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                    Date actual_date = new Date();
+                    if (auction.get_creator() == peer_id) {
+                        return "The creator can't do a bid!";
                     }
-                    else{
-                        return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid()+" and the price is " + auction.getSecond_max_bid();
+                    if (auction.getBid_id() == peer_id) {
+                        return "You have already offered the highest bid!";
                     }
+                    if (actual_date.after(auction.get_end_time())) {
+                        if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                            return "You can't do a bid! The Auction is ended with no winner!";
+                        } else {
+                            return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
+                        }
 
-                } else if (_bid_amount > auction.getMax_bid()) {
+                     //Checking if the new bid is better than the old one and updating all the variables of the auction
+                    } else if (_bid_amount > auction.getMax_bid()) {
 
-                    auction.setSecond_max_bid(auction.getMax_bid());
-                    auction.setMax_bid(_bid_amount);
+                        auction.setSecond_max_bid(auction.getMax_bid());
+                        auction.setMax_bid(_bid_amount);
 
-                    auction.setOld_bid_Address(auction.getPeerAddress_bid());
-                    auction.setPeerAddress_bid(peer.peerAddress());
-
-                    auction.setBid_id(peer_id);
-
-                    if (!auction.getUsers().contains(peer_id)) {
-                        auction.getUsers().add(peer.peerAddress());
+                        auction.setOld_bid_Address(auction.getPeerAddress_bid());
                         auction.setPeerAddress_bid(peer.peerAddress());
+
+                        auction.setBid_id(peer_id);
+
+                        if (!auction.getUsers().contains(peer_id)) {
+                            auction.getUsers().add(peer.peerAddress());
+                            auction.setPeerAddress_bid(peer.peerAddress());
+                        }
+                        dht.put(Number160.createHash(_auction_name)).data(new Data(auction)).start().awaitUninterruptibly();
+                        sendMessage("The new best bid on the " + _auction_name + " auction is " + auction.getMax_bid() + " by " + auction.getBid_id(), _auction_name);
+
+                        return "The auction is active until " + auction.get_end_time() + " and the highest offer is yours with: " + auction.getMax_bid();
+                    } else {
+                        return "You can't do a bid lesser then the biggest bid!";
                     }
-
-                    auctions.put(_auction_name, auction);
-
-                    dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
-                    sendMessage("The new best bid on the "+ _auction_name+" auction is "+auction.getMax_bid()+" by "+ auction.getBid_id(),_auction_name);
-
-                    return "The auction is active until "+ auction.get_end_time()+" and the highest offer is yours with: " + auction.getMax_bid();
-                }
-                else {
-                    return "You can't do a bid lesser then the biggest bid!";
                 }
             }
         }
@@ -263,34 +260,38 @@ Questo metodo prende in input il messaggio da recapitare e il nome dell'asta a c
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista di aste all'interno della dht
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
-3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
+3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro e la scarica dalla dht
 4. Scorre la lista dei peer che hanno partecipato all'asta e invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno.
 
 
 ##### Implementazione
 ```
-public boolean sendMessage(Object _obj,String _auction_name) throws IOException, ClassNotFoundException {
-
+ public boolean sendMessage(Object _obj,String _auction_name) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
-
+        
         if (futureGet.isSuccess()) {
             Collection<Data> dataMapValues = futureGet.dataMap().values();
-            HashMap<String, Auction> auctions;
+
             if (dataMapValues.isEmpty()) {
                 return false;
             } else {
-                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
-            if (auctions.containsKey(_auction_name)) {
-                Auction auction = auctions.get(_auction_name);
-                HashSet<PeerAddress> users = auction.getUsers();
-                for (PeerAddress  mypeer : users) {
-                    if(mypeer.equals(auction.getOld_bid_Address()) && users.size()>1) {
-                        FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
-                        futureDirect.awaitUninterruptibly();
-                    }
+            if (auctions_names.contains(_auction_name)) {
+                futureGet = dht.get(Number160.createHash(_auction_name)).start();
+                futureGet.awaitUninterruptibly();
 
+                if (futureGet.isSuccess()) {
+                    Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                    HashSet<PeerAddress> users = auction.getUsers();
+                    for (PeerAddress mypeer : users) {
+                        if (mypeer.equals(auction.getOld_bid_Address()) && users.size() > 1) {
+                            FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                            futureDirect.awaitUninterruptibly();
+                        }
+
+                    }
                 }
             }
         }
@@ -305,7 +306,7 @@ Il metodo checkAllAuctions viene utilizzato per ottenere la completa lista delle
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista di aste all'interno della dht
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
-3. Scorrendo l'intera lista delle aste presenti en controlla la scadenza e setta di conseguenza la variabile status relativa ad ognuna come 'ENDED' o 'ACTIVE'
+3. Scorrendo l'intera lista delle aste presenti, ne controlla la scadenza e setta di conseguenza la variabile status relativa ad ognuna come 'ENDED' o 'ACTIVE'
 4. Costrusice la stringa contenente tutte le aste presenti con le relative informazioni di base e la restituisce
 
 ##### Implementazione
@@ -316,29 +317,32 @@ Tale funzione si sviluppa attraverso i seguenti step:
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
         String status = "";
-
+        
         if (futureGet.isSuccess()) {
             if(!futureGet.dataMap().values().isEmpty()) {
-                HashMap<String, Auction> auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
-                if (!auctions.isEmpty()) {
-                    for (String name : auctions.keySet()) {
-
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
+                if (!auctions_names.isEmpty()) {
+                    for (String name : auctions_names) {
                         Date actual_date = new Date();
+                        futureGet = dht.get(Number160.createHash(name)).start();
+                        futureGet.awaitUninterruptibly();
 
-                        if (actual_date.after(auctions.get(name).get_end_time())) {
-                            status = "ENDED";
-                        }
-                        else{
-                            status = "ACTIVE";
-                        }
-                        if(auctions.get(name).getUsers().isEmpty()){
-                            all_auctions += "Name: " + name + ", Reserved Price: " + auctions.get(name).getMax_bid() +", Status: "+status+ ", Description: " + auctions.get(name).get_description()+ "\n";
+                        if (futureGet.isSuccess()) {
+                            Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+
+                            if (actual_date.after(auction.get_end_time())) {
+                                status = "ENDED";
+                            } else {
+                                status = "ACTIVE";
+                            }
+                            if (auction.getUsers().isEmpty()) {
+                                all_auctions += "Name: " + name + ", Reserved Price: " + auction.getMax_bid() + ", Status: " + status + ", Description: " + auction.get_description() + "\n";
+
+                            } else {
+                                all_auctions += "Name: " + name + ", Best Bid: " + auction.getMax_bid() + ", Status: " + status + ", Description: " + auction.get_description() + "\n";
+                            }
 
                         }
-                        else{
-                            all_auctions += "Name: " + name + ", Best Bid: " + auctions.get(name).getMax_bid() +", Status: "+status+ ", Description: " + auctions.get(name).get_description()+ "\n";
-                        }
-
                     }
                     return all_auctions;
                 }
@@ -354,37 +358,43 @@ Il metodo removeAnAuction permette al creatore di un asta, utilizzandone il nome
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista di aste all'interno della dht
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
-3. Scorrendo l'intera lista delle aste si ricerca quella con il nome corrispondente al parametro ricevuto e, dopo aver controllato se è il creatore a richiamare il metodo, si elimina dalla lista
-4. La lista modificata viene ricaricata nella dht
+3. Scorrendo l'intera lista delle aste si ricerca quella con il nome corrispondente al parametro ricevuto e, dopo aver controllato se è il creatore a richiamare il metodo, si elimina dalla lista e quest'ultima viene ricaricata nella dht dopo le modifiche
+4. Infine, l'oggetto auction si elimina anche dalla dht per completare l'operazione
 
 
 ##### Implementazione
 ```
- public boolean removeAnAuction(String _auction_name) throws IOException, ClassNotFoundException {
+public boolean removeAnAuction(String _auction_name) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
-
         if (futureGet.isSuccess()) {
             Collection<Data> dataMapValues = futureGet.dataMap().values();
 
-            HashMap<String, Auction> auctions;
             if(dataMapValues.isEmpty()){
                 return false;
             }
             else{
-                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
 
-            for (String name : auctions.keySet()) {
-                if (name.equals(_auction_name) && auctions.get(name).get_creator()==peer_id ) {
-                    auctions.remove(name);
-                    dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
-                    return true;
+            for (String name : auctions_names) {
+                futureGet = dht.get(Number160.createHash(name)).start();
+                futureGet.awaitUninterruptibly();
+
+                if (futureGet.isSuccess()) {
+                    Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+
+                    if (name.equals(_auction_name) && auction.get_creator() == peer_id) {
+                        auctions_names.remove(name);
+                        dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
+                        FutureRemove fr = dht.remove(Number160.createHash(_auction_name)).start().awaitUninterruptibly();
+                        return true;
+                    }
                 }
             }
         }
         return false;
-    }   
+    }
  ```
  
  #### Metodo exit
