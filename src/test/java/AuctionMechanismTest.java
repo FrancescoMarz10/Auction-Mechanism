@@ -203,19 +203,6 @@ public class AuctionMechanismTest {
         }
     }
 
-    //NO CAPITO
-    /*
-    @Test
-    void checkAllAuctions(){
-        try {
-            assertEquals(peer1.checkAllAuctions(),"");
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
- /*
     @Test
     void auctionWithAWinner(){
         try {
@@ -229,41 +216,8 @@ public class AuctionMechanismTest {
         catch(Exception e) {
             e.printStackTrace();
         }
-    }*/
-
-      /*
-    @Test
-    void placeaBidWithWrongDate(){
-        try {
-            Date date = null;
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            //Wrong Date Examples...
-            date = formatter.parse("222/12/2010");
-            date.setHours(11);
-            date.setMinutes(30);
-
-            assertEquals( peer0.createAuction("Seven", date, 37, "Bag of Collection 2019"),"DATE NOT INSERTED CORRECTLY");
-
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    }*/
+    }
 
 
-    //multiple auction
-    //place a bid (all cases) -
-    //wrong hour
-    //wrong date
-    //bid by a creator -
-    //bid by the big offerer -
-    //remove an auction -
-    //bid when auction is ended -
-    //no winner and winner -
-    //messages?
-    //aucton without offers -
-    //leave auction???
-    //multiple bids -
-    //see all auctions -
 
 }

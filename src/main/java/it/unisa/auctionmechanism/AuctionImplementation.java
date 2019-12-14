@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.*;
 
 import net.tomp2p.dht.FutureGet;
+import net.tomp2p.dht.FutureRemove;
 import net.tomp2p.dht.PeerBuilderDHT;
 import net.tomp2p.dht.PeerDHT;
 import net.tomp2p.futures.FutureDirect;
@@ -22,7 +23,7 @@ public class AuctionImplementation implements AuctionMechanism {
     final private int DEFAULT_MASTER_PORT = 4000;
     final private Peer peer;
     int peer_id;
-    HashMap<String, Auction> auctions = new HashMap<String, Auction>();
+    ArrayList<String> auctions_names = new ArrayList<String>();
 
 
     //CONSTRUCTOR
@@ -56,15 +57,15 @@ public class AuctionImplementation implements AuctionMechanism {
             //Creating the auction...
             Auction auction = new Auction(_auction_name,  peer_id,_end_time, _reserved_price,_description);
             FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
-
             futureGet.awaitUninterruptibly();
             if (futureGet.isSuccess()) {
-               auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
-            auctions.put(_auction_name,auction);
+            auctions_names.add(_auction_name);
 
             //Creating the dht...
-            dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
+            dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
+            dht.put(Number160.createHash(_auction_name)).data(new Data(auction)).start().awaitUninterruptibly();
             //Added to the dht...
             return true;
         }
@@ -74,60 +75,57 @@ public class AuctionImplementation implements AuctionMechanism {
     //Checking the status of an auction.
     public String checkAuction(String _auction_name) throws IOException, ClassNotFoundException {
 
-        //Creating the hashmap...
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
 
         if (futureGet.isSuccess()) {
-            //Hashmap found
 
-            //Do we need to put a new HashMap?...
+            //Do we need to put a new ArrayList?...
             if (futureGet.isEmpty()) {
-                dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
-               //Yes...
+                dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
+                //Yes...
                 return null;
             }
 
-            //No, we can take auctions...
-            HashMap<String, Auction> auctions;
-            auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+            //No, we can take auctions_names...
+            auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
 
             //Checking the auction...
+            if(auctions_names.contains(_auction_name)) {
+                futureGet = dht.get(Number160.createHash(_auction_name)).start();
+                futureGet.awaitUninterruptibly();
 
-            if(auctions.containsKey(_auction_name)) {
+                if (futureGet.isSuccess()) {
+                    //Taking the auction...
+                        Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                        Date actual_date = new Date();
 
-                //Taking the auction...
-                Auction auction = auctions.get(_auction_name);
+                        if (actual_date.after(auction.get_end_time())) {
+                            //Checking if the auction is ended..
 
-                Date actual_date = new Date();
+                            //RECHECK DOUBLE? RECHECK!!!!!
+                            if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                                return "The Auction is ended with no winner!";
+                            } else {
+                                if (auction.getBid_id() == peer_id) {
+                                    return "The Auction is ended and the winner is you, " + auction.getBid_id() + ", with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
+                                } else
+                                    return "The Auction is ended and the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
+                            }
 
-                if (actual_date.after(auction.get_end_time())) {
-                    //Checking if the auction is ended..
-
-                    //RECHECK DOUBLE? RECHECK!!!!!
-                    if(auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())){
-                        return "The Auction is ended with no winner!";
-                    }
-                    else{
-                        if(auction.getBid_id()==peer_id){
-                            return "The Auction is ended and the winner is you, " + auction.getBid_id() + ", with this bid: " + auction.getMax_bid() +" and the price is " + auction.getSecond_max_bid();
+                        } else {
+                            //auction is still active.
+                            //Creating the auction status...
+                            if (auction.getUsers().isEmpty()) {
+                                return "The auction is active until " + auction.get_end_time() + " and the reserved price is: " + auction.get_reserved_price();
+                            } else {
+                                if (auction.getBid_id() == peer_id) {
+                                    return "The auction is active until " + auction.get_end_time() + " and the highest offer is yours with: " + auction.getMax_bid();
+                                } else
+                                    return "The auction is active until " + auction.get_end_time() + " and the highest offer is: " + auction.getMax_bid();
+                            }
                         }
-                        else return "The Auction is ended and the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid()+" and the price is " + auction.getSecond_max_bid();
                     }
-
-                } else {
-                    //auction is still active.
-                    //Creating the auction status...
-                    if(auction.getUsers().isEmpty()){
-                        return "The auction is active until "+ auction.get_end_time()+" and the reserved price is: " + auction.get_reserved_price();
-                    }
-                    else {
-                        if(auction.getBid_id()==peer_id){
-                            return "The auction is active until "+ auction.get_end_time()+" and the highest offer is yours with: " + auction.getMax_bid();
-                        }
-                        else return "The auction is active until "+ auction.get_end_time()+" and the highest offer is: " + auction.getMax_bid();
-                    }
-                }
             }
             return null;
         }
@@ -139,61 +137,73 @@ public class AuctionImplementation implements AuctionMechanism {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
 
+        //Checking the presence of the names list of auctions on dht
         if (futureGet.isSuccess()) {
 
             Collection<Data> dataMapValues = futureGet.dataMap().values();
 
-            HashMap<String, Auction> auctions;
             if(dataMapValues.isEmpty()){
                 return null;
             }
             else{
-                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                //Taking the list
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
 
-            if (auctions.containsKey(_auction_name)) {
-                Auction auction = auctions.get(_auction_name);
-                Date actual_date = new Date();
+            //Checking if the researched auction is in the list and so in the dht
+            if (auctions_names.contains(_auction_name)) {
+                futureGet = dht.get(Number160.createHash(_auction_name)).start();
+                futureGet.awaitUninterruptibly();
 
-                if(auction.get_creator()== peer_id){
-                    return "The creator can't do a bid!";
-                }
-                if(auction.getBid_id() == peer_id){
-                    return "You have already offered the highest bid!";
-                }
+                if (futureGet.isSuccess()) {
+                    //Taking the auction...
+                    Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
 
-                if (actual_date.after(auction.get_end_time())) {
-                    if(auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())){
-                        return "You can't do a bid! The Auction is ended with no winner!";
-                    }
-                    else{
-                        return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid()+" and the price is " + auction.getSecond_max_bid();
+                    //Taking the actual date
+                    Date actual_date = new Date();
+
+                    //Checking if the peer is the creator of the auction
+                    if (auction.get_creator() == peer_id) {
+                        return "The creator can't do a bid!";
                     }
 
-                } else if (_bid_amount > auction.getMax_bid()) {
+                    //Checking if the peer is already the best offerer
+                    if (auction.getBid_id() == peer_id) {
+                        return "You have already offered the highest bid!";
+                    }
 
-                    auction.setSecond_max_bid(auction.getMax_bid());
-                    auction.setMax_bid(_bid_amount);
+                    //Checking if the auction is ended
+                    if (actual_date.after(auction.get_end_time())) {
+                        if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                            return "You can't do a bid! The Auction is ended with no winner!";
+                        } else {
+                            return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
+                        }
 
-                    auction.setOld_bid_Address(auction.getPeerAddress_bid());
-                    auction.setPeerAddress_bid(peer.peerAddress());
+                     //Checking if the new bid is better than the old one and updating all the variables of the auction
+                    } else if (_bid_amount > auction.getMax_bid()) {
 
-                    auction.setBid_id(peer_id);
+                        auction.setSecond_max_bid(auction.getMax_bid());
+                        auction.setMax_bid(_bid_amount);
 
-                    if (!auction.getUsers().contains(peer_id)) {
-                        auction.getUsers().add(peer.peerAddress());
+                        auction.setOld_bid_Address(auction.getPeerAddress_bid());
                         auction.setPeerAddress_bid(peer.peerAddress());
+
+                        auction.setBid_id(peer_id);
+
+                        if (!auction.getUsers().contains(peer_id)) {
+                            auction.getUsers().add(peer.peerAddress());
+                            auction.setPeerAddress_bid(peer.peerAddress());
+                        }
+
+                        //Putting the updated auction in the dht again
+                        dht.put(Number160.createHash(_auction_name)).data(new Data(auction)).start().awaitUninterruptibly();
+                        sendMessage("The new best bid on the " + _auction_name + " auction is " + auction.getMax_bid() + " by " + auction.getBid_id(), _auction_name);
+
+                        return "The auction is active until " + auction.get_end_time() + " and the highest offer is yours with: " + auction.getMax_bid();
+                    } else {
+                        return "You can't do a bid lesser then the biggest bid!";
                     }
-
-                    auctions.put(_auction_name, auction);
-
-                    dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
-                    sendMessage("The new best bid on the "+ _auction_name+" auction is "+auction.getMax_bid()+" by "+ auction.getBid_id(),_auction_name);
-
-                    return "The auction is active until "+ auction.get_end_time()+" and the highest offer is yours with: " + auction.getMax_bid();
-                }
-                else {
-                    return "You can't do a bid lesser then the biggest bid!";
                 }
             }
         }
@@ -206,32 +216,43 @@ public class AuctionImplementation implements AuctionMechanism {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
 
+        //Checking the presence of the names list of auctions on dht
         if (futureGet.isSuccess()) {
-
             Collection<Data> dataMapValues = futureGet.dataMap().values();
 
-            HashMap<String, Auction> auctions;
             if (dataMapValues.isEmpty()) {
                 return false;
             } else {
-                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                //Taking the list
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
-            if (auctions.containsKey(_auction_name)) {
-                Auction auction = auctions.get(_auction_name);
-                HashSet<PeerAddress> users = auction.getUsers();
-                for (PeerAddress  mypeer : users) {
-                    if(mypeer.equals(auction.getOld_bid_Address()) && users.size()>1) {
-                        FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
-                        futureDirect.awaitUninterruptibly();
-                    }
 
+            //Checking if the researched auction is in the list and so in the dht
+            if (auctions_names.contains(_auction_name)) {
+
+                futureGet = dht.get(Number160.createHash(_auction_name)).start();
+                futureGet.awaitUninterruptibly();
+
+                if (futureGet.isSuccess()) {
+                    //Taking the auction...
+                    Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                    HashSet<PeerAddress> users = auction.getUsers();
+
+                    //Sending the notify of the new best bid to the old best offerer
+                    for (PeerAddress mypeer : users) {
+                        if (mypeer.equals(auction.getOld_bid_Address()) && users.size() > 1) {
+                            FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                            futureDirect.awaitUninterruptibly();
+                        }
+
+                    }
                 }
             }
         }
         return true;
     }
 
-    //Leaving the net.
+    //Leaving the net. Remove every auction created? And offers?
     public boolean exit(){
         try {
             dht.peer().announceShutdown().start().awaitUninterruptibly();
@@ -250,28 +271,39 @@ public class AuctionImplementation implements AuctionMechanism {
         futureGet.awaitUninterruptibly();
         String status = "";
 
+        //Checking the presence of the names list of auctions on dht
         if (futureGet.isSuccess()) {
             if(!futureGet.dataMap().values().isEmpty()) {
-                HashMap<String, Auction> auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
-                if (!auctions.isEmpty()) {
-                    for (String name : auctions.keySet()) {
+
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
+
+                //Checking if the list of names is not empty
+                if (!auctions_names.isEmpty()) {
+
+                    //Taking all the auctions and their informations with a for loop.
+                    for (String name : auctions_names) {
 
                         Date actual_date = new Date();
+                        futureGet = dht.get(Number160.createHash(name)).start();
+                        futureGet.awaitUninterruptibly();
 
-                        if (actual_date.after(auctions.get(name).get_end_time())) {
-                            status = "ENDED";
-                        }
-                        else{
-                            status = "ACTIVE";
-                        }
-                        if(auctions.get(name).getUsers().isEmpty()){
-                            all_auctions += "Name: " + name + ", Reserved Price: " + auctions.get(name).getMax_bid() +", Status: "+status+ ", Description: " + auctions.get(name).get_description()+ "\n";
+                        if (futureGet.isSuccess()) {
+                            //Taking the auction...
+                            Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+
+                            if (actual_date.after(auction.get_end_time())) {
+                                status = "ENDED";
+                            } else {
+                                status = "ACTIVE";
+                            }
+                            if (auction.getUsers().isEmpty()) {
+                                all_auctions += "Name: " + name + ", Reserved Price: " + auction.getMax_bid() + ", Status: " + status + ", Description: " + auction.get_description() + "\n";
+
+                            } else {
+                                all_auctions += "Name: " + name + ", Best Bid: " + auction.getMax_bid() + ", Status: " + status + ", Description: " + auction.get_description() + "\n";
+                            }
 
                         }
-                        else{
-                            all_auctions += "Name: " + name + ", Best Bid: " + auctions.get(name).getMax_bid() +", Status: "+status+ ", Description: " + auctions.get(name).get_description()+ "\n";
-                        }
-
                     }
                     return all_auctions;
                 }
@@ -286,22 +318,33 @@ public class AuctionImplementation implements AuctionMechanism {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
 
+        //Checking the presence of the names list of auctions on dht
         if (futureGet.isSuccess()) {
             Collection<Data> dataMapValues = futureGet.dataMap().values();
 
-            HashMap<String, Auction> auctions;
             if(dataMapValues.isEmpty()){
                 return false;
             }
             else{
-                auctions = (HashMap<String, Auction>) futureGet.dataMap().values().iterator().next().object();
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
 
-            for (String name : auctions.keySet()) {
-                if (name.equals(_auction_name) && auctions.get(name).get_creator()==peer_id ) {
-                    auctions.remove(name);
-                    dht.put(Number160.createHash("auctions")).data(new Data(auctions)).start().awaitUninterruptibly();
-                    return true;
+            for (String name : auctions_names) {
+                futureGet = dht.get(Number160.createHash(name)).start();
+                futureGet.awaitUninterruptibly();
+
+                if (futureGet.isSuccess()) {
+                    //Taking the auction...
+                    Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+
+                    if (name.equals(_auction_name) && auction.get_creator() == peer_id) {
+                        auctions_names.remove(name);
+
+                        //Removing the auction from the list and in the dht
+                        dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
+                        FutureRemove fr = dht.remove(Number160.createHash(_auction_name)).start().awaitUninterruptibly();
+                        return true;
+                    }
                 }
             }
         }

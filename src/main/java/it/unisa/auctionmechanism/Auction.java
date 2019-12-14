@@ -41,39 +41,13 @@ public class Auction implements Serializable {
 
     //get and set methods
 
-
-    public void set_reserved_price(Double _reserved_price) {
-        this._reserved_price = _reserved_price;
+    public String get_auction_name() {
+        return _auction_name;
     }
 
-    public void setMax_bid(Double max_bid) {
-        this.max_bid = max_bid;
+    public void set_auction_name(String _auction_name) {
+        this._auction_name = _auction_name;
     }
-
-    public Double getSecond_max_bid() {
-        return second_max_bid;
-    }
-
-    public void setSecond_max_bid(Double second_max_bid) {
-        this.second_max_bid = second_max_bid;
-    }
-
-    public PeerAddress getOld_bid_Address() {
-        return old_bid_Address;
-    }
-
-    public void setOld_bid_Address(PeerAddress old_bid_Address) {
-        this.old_bid_Address = old_bid_Address;
-    }
-
-    public PeerAddress getPeerAddress_bid() {
-        return peerAddress_bid;
-    }
-
-    public void setPeerAddress_bid(PeerAddress peerAddress_bid) {
-        this.peerAddress_bid = peerAddress_bid;
-    }
-
 
     public int get_creator() {
         return _creator;
@@ -81,14 +55,6 @@ public class Auction implements Serializable {
 
     public void set_creator(int _creator) {
         this._creator = _creator;
-    }
-
-    public String get_auction_name() {
-        return _auction_name;
-    }
-
-    public void set_auction_name(String _auction_name) {
-        this._auction_name = _auction_name;
     }
 
     public Date get_end_time() {
@@ -103,7 +69,7 @@ public class Auction implements Serializable {
         return _reserved_price;
     }
 
-    public void set_reserved_price(double _reserved_price) {
+    public void set_reserved_price(Double _reserved_price) {
         this._reserved_price = _reserved_price;
     }
 
@@ -111,8 +77,16 @@ public class Auction implements Serializable {
         return max_bid;
     }
 
-    public void setMax_bid(double max_bid) {
+    public void setMax_bid(Double max_bid) {
         this.max_bid = max_bid;
+    }
+
+    public Double getSecond_max_bid() {
+        return second_max_bid;
+    }
+
+    public void setSecond_max_bid(Double second_max_bid) {
+        this.second_max_bid = second_max_bid;
     }
 
     public int getBid_id() {
@@ -121,6 +95,22 @@ public class Auction implements Serializable {
 
     public void setBid_id(int bid_id) {
         this.bid_id = bid_id;
+    }
+
+    public PeerAddress getPeerAddress_bid() {
+        return peerAddress_bid;
+    }
+
+    public void setPeerAddress_bid(PeerAddress peerAddress_bid) {
+        this.peerAddress_bid = peerAddress_bid;
+    }
+
+    public PeerAddress getOld_bid_Address() {
+        return old_bid_Address;
+    }
+
+    public void setOld_bid_Address(PeerAddress old_bid_Address) {
+        this.old_bid_Address = old_bid_Address;
     }
 
     public String get_description() {
@@ -139,15 +129,18 @@ public class Auction implements Serializable {
         this.users = users;
     }
 
-    //toString method
     @Override
     public String toString() {
         return "Auction{" +
                 "_auction_name='" + _auction_name + '\'' +
+                ", _creator=" + _creator +
                 ", _end_time=" + _end_time +
                 ", _reserved_price=" + _reserved_price +
                 ", max_bid=" + max_bid +
+                ", second_max_bid=" + second_max_bid +
                 ", bid_id=" + bid_id +
+                ", peerAddress_bid=" + peerAddress_bid +
+                ", old_bid_Address=" + old_bid_Address +
                 ", _description='" + _description + '\'' +
                 ", users=" + users +
                 '}';
