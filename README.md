@@ -486,7 +486,24 @@ void removeABid(){
 ```
 
 ### 5. auctionWithAWinner() and auctionWithNoWinner()
-// MANCA IL WINNER
+
+```
+void auctionWithAWinner(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Logitech G430", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 70, "Logitech G430 7.1 surround sound gaming headset with lightweight, performance ear cups, and digital USB balances performance and comfort.");
+            peer1.placeAbid("Logitech G430",100);
+            peer2.placeAbid("Logitech G430",200);
+            Thread.sleep(2000);
+            assertEquals(peer0.checkAuction("Logitech G430"),"The Auction is ended and the winner is 2 with this bid: 200.0 and the price is 100.0");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+```
+
 ```
 void auctionWithNoWinner(){
         try {
