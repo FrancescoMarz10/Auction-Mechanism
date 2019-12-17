@@ -421,24 +421,14 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  ```
  ```
   public void removeMyAuctions() throws IOException, ClassNotFoundException {
-        String all_auctions = "";
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
-        String status = "";
-
-        //Checking the presence of the names list of auctions on dht
         if (futureGet.isSuccess()) {
             if (!futureGet.dataMap().values().isEmpty()) {
 
                 auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
-
-                //Checking if the list of names is not empty
                 if (!auctions_names.isEmpty()) {
-
-                    //Taking all the auctions and their informations with a for loop.
                     for (String name : auctions_names) {
-
-                        Date actual_date = new Date();
                         futureGet = dht.get(Number160.createHash(name)).start();
                         futureGet.awaitUninterruptibly();
 
