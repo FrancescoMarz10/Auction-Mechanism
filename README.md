@@ -435,7 +435,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
                         if (futureGet.isSuccess()) {
                             Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
                             if(auction.get_creator()==peer_id){
-                                sendMessage("The auction "+ name+ " has been deleted because the creator leave the network", name,2);
+                                sendMessage("The auction "+ name+ " has been deleted because the creator left the network!", name,2);
                                 removeAnAuction(name);
                             }
                         }
