@@ -218,6 +218,21 @@ public class AuctionMechanismTest {
         }
     }
 
+    @Test
+    void leaveTheNetworkAsCreator(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Proiettore APEMAN Portatile", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 100, "Il proiettore APEMAN LC550 viene utilizzato principalmente per l'home cinema e i videogiochi, NON consigliato per Powerpoint o presentazioni aziendali.");
+
+            Thread.sleep(2000);
+            assertEquals(peer0.exit(),true);
+            assertEquals(peer0.checkAuction("Proiettore APEMAN Portatile"),null);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

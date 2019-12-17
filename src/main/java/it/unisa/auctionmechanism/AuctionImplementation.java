@@ -198,7 +198,7 @@ public class AuctionImplementation implements AuctionMechanism {
 
                         //Putting the updated auction in the dht again
                         dht.put(Number160.createHash(_auction_name)).data(new Data(auction)).start().awaitUninterruptibly();
-                        sendMessage("The new best bid on the " + _auction_name + " auction is " + auction.getMax_bid() + " by " + auction.getBid_id(), _auction_name);
+                        sendMessage("The new best bid on the " + _auction_name + " auction is " + auction.getMax_bid() + " by " + auction.getBid_id(), _auction_name,1);
 
                         return "The auction is active until " + auction.get_end_time() + " and the highest offer is yours with: " + auction.getMax_bid();
                     } else {
@@ -211,7 +211,7 @@ public class AuctionImplementation implements AuctionMechanism {
     }
 
     //Send a new message when a bid is outdated.
-    public boolean sendMessage(Object _obj,String _auction_name) throws IOException, ClassNotFoundException {
+    public boolean sendMessage(Object _obj,String _auction_name, int type) throws IOException, ClassNotFoundException {
 
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
@@ -240,7 +240,11 @@ public class AuctionImplementation implements AuctionMechanism {
 
                     //Sending the notify of the new best bid to the old best offerer
                     for (PeerAddress mypeer : users) {
-                        if (mypeer.equals(auction.getOld_bid_Address()) && users.size() > 1) {
+                        if (mypeer.equals(auction.getOld_bid_Address()) && users.size() > 1 && type == 1) {
+                            FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                            futureDirect.awaitUninterruptibly();
+                        }
+                        else if( type == 2){
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
@@ -255,6 +259,7 @@ public class AuctionImplementation implements AuctionMechanism {
     //Leaving the net. Remove every auction created? And offers?
     public boolean exit(){
         try {
+            removeMyAuctions();
             dht.peer().announceShutdown().start().awaitUninterruptibly();
             return true;
         } catch (Exception e) {
@@ -349,6 +354,37 @@ public class AuctionImplementation implements AuctionMechanism {
             }
         }
         return false;
+    }
+
+    public void removeMyAuctions() throws IOException, ClassNotFoundException {
+        FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+        futureGet.awaitUninterruptibly();
+
+        //Checking the presence of the names list of auctions on dht
+        if (futureGet.isSuccess()) {
+            if (!futureGet.dataMap().values().isEmpty()) {
+
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
+
+                //Checking if the list of names is not empty
+                if (!auctions_names.isEmpty()) {
+
+                    //Taking all the auctions and their informations with a for loop.
+                    for (String name : auctions_names) {
+                        futureGet = dht.get(Number160.createHash(name)).start();
+                        futureGet.awaitUninterruptibly();
+
+                        if (futureGet.isSuccess()) {
+                            Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                            if(auction.get_creator()==peer_id){
+                                sendMessage("The auction "+ name+ " has been deleted because the creator left the network!", name,2);
+                                removeAnAuction(name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
