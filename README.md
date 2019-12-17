@@ -403,37 +403,13 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  ```
  
  #### Metodo exit
- Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create ed i partecipanti a queste vengono avvisati tramite un messaggio.
+ Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create ed i partecipanti a queste vengono avvisati tramite un messaggio, grazie al metodo removeMyAuctions().
  
  #### Implementazione
  ```
-     public boolean exit(){
+ public boolean exit(){
         try {
-            String all_auctions = "";
-            FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
-            futureGet.awaitUninterruptibly();
-            String status = "";
-            if (futureGet.isSuccess()) {
-                if (!futureGet.dataMap().values().isEmpty()) {
-                    auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
-                    if (!auctions_names.isEmpty()) {
-                        for (String name : auctions_names) {
-
-                            Date actual_date = new Date();
-                            futureGet = dht.get(Number160.createHash(name)).start();
-                            futureGet.awaitUninterruptibly();
-
-                            if (futureGet.isSuccess()) {
-                                Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
-                                if(auction.get_creator()==peer_id){
-                                    sendMessage("The auction "+ name+ " has been deleted because the creator leave the network", name,2);
-                                    removeAnAuction(name);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            removeMyAuctions();
             dht.peer().announceShutdown().start().awaitUninterruptibly();
             return true;
         } catch (Exception e) {
@@ -443,6 +419,43 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
     }
 
  ```
+ ```
+  public void removeMyAuctions() throws IOException, ClassNotFoundException {
+        String all_auctions = "";
+        FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+        futureGet.awaitUninterruptibly();
+        String status = "";
+
+        //Checking the presence of the names list of auctions on dht
+        if (futureGet.isSuccess()) {
+            if (!futureGet.dataMap().values().isEmpty()) {
+
+                auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
+
+                //Checking if the list of names is not empty
+                if (!auctions_names.isEmpty()) {
+
+                    //Taking all the auctions and their informations with a for loop.
+                    for (String name : auctions_names) {
+
+                        Date actual_date = new Date();
+                        futureGet = dht.get(Number160.createHash(name)).start();
+                        futureGet.awaitUninterruptibly();
+
+                        if (futureGet.isSuccess()) {
+                            Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                            if(auction.get_creator()==peer_id){
+                                sendMessage("The auction "+ name+ " has been deleted because the creator leave the network", name,2);
+                                removeAnAuction(name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+ ```
+ 
  
 # Testing
  I casi di test analizzati sono i seguenti:
