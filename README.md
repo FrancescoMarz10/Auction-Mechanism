@@ -254,14 +254,14 @@ Tale funzione si sviluppa attraverso i seguenti step:
 ## Altri metodi implementati
 
 #### Metodo sendMessage
-Il metodo sendMessage viene utilizzato per notificare un peer che la sua offerta è stata appena superata da una nuova proposta di valore maggiore.
-Questo metodo prende in input il messaggio da recapitare e il nome dell'asta a cui fa riferimento.
+Il metodo sendMessage viene utilizzato per notificare un peer che la sua offerta è stata appena superata da una nuova proposta di valore maggiore, oppure per avvisare i partecipanti ad un asta dell'improvviso abbandono della rete da parte del creatore dell'asta e dell'eliminazione di quest'ultima.
+Questo metodo prende in input il messaggio da recapitare, il nome dell'asta a cui fa riferimento ed il tipo di messaggio da inviare.
 
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista di aste all'interno della dht
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
 3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro e la scarica dalla dht
-4. Scorre la lista dei peer che hanno partecipato all'asta e invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno.
+4.Scorre la lista dei peer che hanno partecipato all'asta e nel caso in cui un'offerta viene superata invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno. Altrimenti se il creatore dell'asta ha lasciato la rete avvisa tutti i partecipanti che l'asta è stata eliminata.
 
 
 ##### Implementazione
@@ -287,6 +287,10 @@ Tale funzione si sviluppa attraverso i seguenti step:
                     HashSet<PeerAddress> users = auction.getUsers();
                     for (PeerAddress mypeer : users) {
                         if (mypeer.equals(auction.getOld_bid_Address()) && users.size() > 1) {
+                            FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                            futureDirect.awaitUninterruptibly();
+                        }
+                        else if(type == 2){
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
@@ -398,12 +402,37 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  ```
  
  #### Metodo exit
- Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema.
+ Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create ed i partecipanti a queste vengono avvisati tramite un messaggio.
  
  #### Implementazione
  ```
- public boolean exit(){
+     public boolean exit(){
         try {
+            String all_auctions = "";
+            FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
+            futureGet.awaitUninterruptibly();
+            String status = "";
+            if (futureGet.isSuccess()) {
+                if (!futureGet.dataMap().values().isEmpty()) {
+                    auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
+                    if (!auctions_names.isEmpty()) {
+                        for (String name : auctions_names) {
+
+                            Date actual_date = new Date();
+                            futureGet = dht.get(Number160.createHash(name)).start();
+                            futureGet.awaitUninterruptibly();
+
+                            if (futureGet.isSuccess()) {
+                                Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+                                if(auction.get_creator()==peer_id){
+                                    sendMessage("The auction "+ name+ " has been deleted because the creator leave the network", name,2);
+                                    removeAnAuction(name);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             dht.peer().announceShutdown().start().awaitUninterruptibly();
             return true;
         } catch (Exception e) {
@@ -411,6 +440,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
         }
         return false;
     }
+
  ```
  
 # Testing
@@ -421,6 +451,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  4. Rimozione di un asta (diversi casi)
  5. Asta con e senza vincitore
  6. Creazione di un asta già presente
+ 7. Abbandonare la rete da creatore di almeno un asta
  
 ### 1. placeABidAsCreator()
   ```
@@ -535,4 +566,21 @@ void DuplicateAuctionError() {
         }
  }
  ```
+
+### 7. leaveTheNetworkAsCreator()
+ ```
+    void leaveTheNetworkAsCreator(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Proiettore APEMAN Portatile", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 100, "Il proiettore APEMAN LC550 viene utilizzato principalmente per l'home cinema e i videogiochi, NON consigliato per Powerpoint o presentazioni aziendali.");
+
+            Thread.sleep(2000);
+            assertEquals(peer0.exit(),true);
+            assertEquals(peer0.checkAuction("Proiettore APEMAN Portatile"),null);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+```
 
