@@ -261,7 +261,8 @@ Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista di aste all'interno della dht
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
 3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro e la scarica dalla dht
-4.Scorre la lista dei peer che hanno partecipato all'asta e nel caso in cui un'offerta viene superata invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno. Altrimenti se il creatore dell'asta ha lasciato la rete avvisa tutti i partecipanti che l'asta è stata eliminata.
+4. Scorre la lista dei peer che hanno partecipato all'asta e nel caso in cui un'offerta viene superata invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno. 
+5. Altrimenti se il creatore dell'asta ha lasciato la rete avvisa tutti i partecipanti che l'asta è stata eliminata.
 
 
 ##### Implementazione
