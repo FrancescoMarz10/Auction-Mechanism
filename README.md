@@ -446,6 +446,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
                             if(auction.getBid_id()==peer_id){
                                 auction.setBid_id(0);
                                 auction.setMax_bid(auction._reserved_price);
+                                auction.getUsers().remove(peer.peerAddress());
                                 sendMessage("The best bid for the auction "+ name+ " has been resetted because the best bidder left the network!", name,3);
                             }
                         }
