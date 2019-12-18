@@ -447,6 +447,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
                                 auction.setBid_id(0);
                                 auction.setMax_bid(auction._reserved_price);
                                 auction.getUsers().remove(peer.peerAddress());
+                                dht.put(Number160.createHash(name)).data(new Data(auction)).start().awaitUninterruptibly();
                                 sendMessage("The best bid for the auction "+ name+ " has been resetted because the best bidder left the network!", name,3);
                             }
                         }
