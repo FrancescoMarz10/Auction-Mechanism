@@ -295,7 +295,10 @@ Tale funzione si sviluppa attraverso i seguenti step:
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
-
+                         else if(type == 3){
+                            FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                            futureDirect.awaitUninterruptibly();
+                        }
                     }
                 }
             }
@@ -409,7 +412,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  ```
  public boolean exit(){
         try {
-            removeMyAuctions();
+            removeMyAuctionsAndOffers();
             dht.peer().announceShutdown().start().awaitUninterruptibly();
             return true;
         } catch (Exception e) {
@@ -420,7 +423,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
 
  ```
  ```
-  public void removeMyAuctions() throws IOException, ClassNotFoundException {
+ public void removeMyAuctionsAndOffers() throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
         if (futureGet.isSuccess()) {
@@ -428,6 +431,8 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
 
                 auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
                 if (!auctions_names.isEmpty()) {
+
+                    //Taking all the auctions and their informations with a for loop.
                     for (String name : auctions_names) {
                         futureGet = dht.get(Number160.createHash(name)).start();
                         futureGet.awaitUninterruptibly();
@@ -438,12 +443,19 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
                                 sendMessage("The auction "+ name+ " has been deleted because the creator left the network!", name,2);
                                 removeAnAuction(name);
                             }
+                            if(auction.getBid_id()==peer_id){
+                                auction.setBid_id(0);
+                                auction.setMax_bid(auction._reserved_price);
+                                sendMessage("The best bid for the auction "+ name+ " has been resetted because the best bidder left the network!", name,3);
+                            }
                         }
                     }
                 }
             }
         }
     }
+
+}
  ```
  
  
