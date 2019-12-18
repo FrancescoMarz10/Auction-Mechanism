@@ -233,6 +233,22 @@ public class AuctionMechanismTest {
         }
     }
 
+    @Test
+    void leaveTheNetworkAsBestBidder(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("Play Station 4", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 200, "Console Sony!");
+            peer1.placeAbid("Play Station 4", 300);
+            peer2.placeAbid("Play Station 4", 350);
+            Thread.sleep(2000);
+            assertEquals(peer2.exit(),true);
+            assertEquals(peer0.checkAuction("Play Station 4"),"The Auction is ended with no winner!");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

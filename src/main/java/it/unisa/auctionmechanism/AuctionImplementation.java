@@ -248,7 +248,10 @@ public class AuctionImplementation implements AuctionMechanism {
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
-
+                        else if(type == 3){
+                                FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                                futureDirect.awaitUninterruptibly();
+                        }
                     }
                 }
             }
@@ -259,7 +262,7 @@ public class AuctionImplementation implements AuctionMechanism {
     //Leaving the net. Remove every auction created? And offers?
     public boolean exit(){
         try {
-            removeMyAuctions();
+            removeMyAuctionsAndOffers();
             dht.peer().announceShutdown().start().awaitUninterruptibly();
             return true;
         } catch (Exception e) {
@@ -356,7 +359,7 @@ public class AuctionImplementation implements AuctionMechanism {
         return false;
     }
 
-    public void removeMyAuctions() throws IOException, ClassNotFoundException {
+    public void removeMyAuctionsAndOffers() throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
 
@@ -379,6 +382,13 @@ public class AuctionImplementation implements AuctionMechanism {
                             if(auction.get_creator()==peer_id){
                                 sendMessage("The auction "+ name+ " has been deleted because the creator left the network!", name,2);
                                 removeAnAuction(name);
+                            }
+                            if(auction.getBid_id()==peer_id){
+                                auction.setBid_id(0);
+                                auction.setMax_bid(auction._reserved_price);
+                                auction.getUsers().remove(peer.peerAddress());
+                                dht.put(Number160.createHash(name)).data(new Data(auction)).start().awaitUninterruptibly();
+                                sendMessage("The best bid for the auction "+ name+ " has been resetted because the best bidder left the network!", name,3);
                             }
                         }
                     }
