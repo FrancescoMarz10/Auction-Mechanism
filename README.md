@@ -262,7 +262,8 @@ Tale funzione si sviluppa attraverso i seguenti step:
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
 3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro e la scarica dalla dht
 4. Scorre la lista dei peer che hanno partecipato all'asta e nel caso in cui un'offerta viene superata invia il messaggio al precedente vincitore momentaneo se tale lista ha più di un elemento al suo interno. 
-5. Altrimenti se il creatore dell'asta ha lasciato la rete avvisa tutti i partecipanti che l'asta è stata eliminata.
+5. Invece se il creatore dell'asta ha lasciato la rete avvisa tutti i partecipanti che l'asta è stata eliminata.
+6. Altrimenti se il miglior offerente ha lasciato la rete avvisa tutti i partecipanti che il prezzo è stato resettato e bisogna effettuare nuove offerte.
 
 
 ##### Implementazione
@@ -406,7 +407,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  ```
  
  #### Metodo exit
- Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create ed i partecipanti a queste vengono avvisati tramite un messaggio, grazie al metodo removeMyAuctions().
+ Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create, resettate tutte le aste in cui è il miglior offerente ed i partecipanti a queste vengono avvisati tramite un messaggio, grazie al metodo removeMyAuctionsAndOffers().
  
  #### Implementazione
  ```
