@@ -467,6 +467,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  6. Creazione di un asta già presente
  7. Abbandonare la rete da creatore di almeno un'asta
  8. Abbandonare la rete da miglior offerente su un'asta
+ 9. Controlla tutte le aste presenti nella dht
  
 ### 1. placeABidAsCreator()
   ```
@@ -617,3 +618,23 @@ void leaveTheNetworkAsBestBidder(){
     }
 ```
 
+### 9. CheckAllAuctions()
+```
+ void checkAllAuctions(){
+        try {
+            Date date = new Date();
+            peer0.createAuction("The Witcher 3: Wild Hunt", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 50, "Videogame for PC and Play Station 4");
+            peer1.createAuction("Mountain Bike", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 500, "The mountain bike is a bicycle structured so that it can also move off asphalt roads, both uphill and downhill.");
+            Thread.sleep(2000);
+            assertEquals(peer2.checkAllAuctions(),"Name: Logitech G431, Best Bid: 100.0, Status: ENDED, Description: Logitech G430 7.1 surround sound gaming headset with lightweight, performance ear cups, and digital USB balances performance and comfort.\n" +
+                    "Name: Notebook HP, Reserved Price: 1300.0, Status: ENDED, Description: A notebook is a small, portable personal computer (PC)\n" +
+                    "Name: Iphone 11, Reserved Price: 800.0, Status: ACTIVE, Description: New Apple Smartphone\n" +
+                    "Name: Logitech G430, Best Bid: 200.0, Status: ENDED, Description: Logitech G430 7.1 surround sound gaming headset with lightweight, performance ear cups, and digital USB balances performance and comfort.\n" +
+                    "Name: The Witcher 3: Wild Hunt, Reserved Price: 50.0, Status: ENDED, Description: Videogame for PC and Play Station 4\n" +
+                    "Name: Mountain Bike, Reserved Price: 500.0, Status: ENDED, Description: The mountain bike is a bicycle structured so that it can also move off asphalt roads, both uphill and downhill.\n");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+```
