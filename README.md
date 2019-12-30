@@ -654,7 +654,7 @@ void removeABidAsANonCreator(){
     }
 ```
 
-### 10. multiplebids() and auctionWithOneBidder()
+### 10. multipleBids() and auctionWithOneBidder()
 ```
  void multipleBids(){
         try {
