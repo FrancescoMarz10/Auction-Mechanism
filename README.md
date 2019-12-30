@@ -468,7 +468,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  7. Abbandonare la rete da creatore di almeno un'asta
  8. Abbandonare la rete da miglior offerente su un'asta
  9. Controlla tutte le aste presenti nella dht
- 10. Offerte multiple e offerta singola ad un'asta
+ 10. Offerte multiple ed offerta singola ad un'asta
  
 ### 1. placeABidAsCreator()
   ```
