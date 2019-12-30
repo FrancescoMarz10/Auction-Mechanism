@@ -268,7 +268,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
 
 ##### Implementazione
 ```
- public boolean sendMessage(Object _obj,String _auction_name) throws IOException, ClassNotFoundException {
+ public boolean sendMessage(Object _obj,String _auction_name, int type) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
         
@@ -288,15 +288,11 @@ Tale funzione si sviluppa attraverso i seguenti step:
                     Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
                     HashSet<PeerAddress> users = auction.getUsers();
                     for (PeerAddress mypeer : users) {
-                        if (mypeer.equals(auction.getOld_bid_Address()) && users.size() > 1) {
+                        if (mypeer.equals(auction.getOld_bid_Address()) && users.size() > 1 && type == 1) {
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
-                        else if(type == 2){
-                            FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
-                            futureDirect.awaitUninterruptibly();
-                        }
-                         else if(type == 3){
+                        else if(type != 1){
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
