@@ -100,6 +100,10 @@ Tale funzione si sviluppa attraverso i seguenti step:
 public boolean createAuction(String _auction_name, Date _end_time, double _reserved_price, String _description) throws IOException, ClassNotFoundException {
 
         if(checkAuction(_auction_name) == null){
+            Date actual_date = new Date();
+            if (actual_date.after(_end_time)){
+                return false;
+            }
             Auction auction = new Auction(_auction_name,  peer_id,_end_time, _reserved_price,_description);
             FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
             futureGet.awaitUninterruptibly();
@@ -500,15 +504,10 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
 
 ### 3. placeAnOutdatedBid()
 ```
- void placeAnOutdatedBid(){
+  void placeAnOutdatedBid(){
         try {
-            Date date = null;
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            date = formatter.parse("22/12/2010");
-            date.setHours(11);
-            date.setMinutes(30);
-
-            peer0.createAuction("OnePlus", date, 800, "New Android Smartphone");
+            peer0.createAuction("OnePlus", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 800, "New Android Smartphone");
+            Thread.sleep(1500);
             assertEquals("You can't do a bid! The Auction is ended with no winner!", peer1.placeAbid("OnePlus", 1000));
             Thread.sleep(1500);
             assertEquals("The Auction is ended with no winner!", peer0.checkAuction("OnePlus"));
