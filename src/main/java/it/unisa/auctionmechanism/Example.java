@@ -162,7 +162,7 @@ public class Example {
                                 break;
                             }
 
-                            Date actual = new Date();
+                           // Date actual = new Date();
 
 
                             String complete_hour  = textIO.newStringInputReader()
@@ -205,10 +205,6 @@ public class Example {
                                 date.setHours(hour);
                                 date.setMinutes(minutes);
 
-                                if( date.before(actual) ){
-                                    terminal.printf("\nDATE NOT INSERTED CORRECTLY\n");
-                                    break;
-                                }
 
                             } catch (ParseException e) {
                                 System.out.println(e.toString());
@@ -291,3 +287,6 @@ public class Example {
 
 
 }
+
+//CAMBIARE LE SCRITTE
+//SE USER GIA' HA OFFERTA PIU' ALTA NON PUO' RIOFFRIRE

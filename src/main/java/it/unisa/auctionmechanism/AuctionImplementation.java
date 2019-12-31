@@ -55,6 +55,10 @@ public class AuctionImplementation implements AuctionMechanism {
         if(checkAuction(_auction_name) == null){
 
             //Creating the auction...
+            Date actual_date = new Date();
+            if (actual_date.after(_end_time)){
+                return false;
+            }
             Auction auction = new Auction(_auction_name,  peer_id,_end_time, _reserved_price,_description);
             FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
             futureGet.awaitUninterruptibly();
