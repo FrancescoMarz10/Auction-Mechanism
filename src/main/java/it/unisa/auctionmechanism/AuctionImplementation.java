@@ -106,8 +106,7 @@ public class AuctionImplementation implements AuctionMechanism {
 
                         if (actual_date.after(auction.get_end_time())) {
                             //Checking if the auction is ended..
-
-                            //RECHECK DOUBLE? RECHECK!!!!!
+                            
                             if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
                                 return "The Auction is ended with no winner!";
                             } else {
