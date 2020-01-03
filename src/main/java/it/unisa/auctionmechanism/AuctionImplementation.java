@@ -106,7 +106,7 @@ public class AuctionImplementation implements AuctionMechanism {
 
                         if (actual_date.after(auction.get_end_time())) {
                             //Checking if the auction is ended..
-                            
+
                             if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
                                 return "The Auction is ended with no winner!";
                             } else {
@@ -177,7 +177,7 @@ public class AuctionImplementation implements AuctionMechanism {
 
                     //Checking if the auction is ended
                     if (actual_date.after(auction.get_end_time())) {
-                        if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                        if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
                             return "You can't do a bid! The Auction is ended with no winner!";
                         } else {
                             return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
@@ -258,7 +258,7 @@ public class AuctionImplementation implements AuctionMechanism {
         return true;
     }
 
-    //Leaving the net. Remove every auction created? And offers?
+    //Leaving the net. Removing every auction created and every bid done.
     public boolean exit(){
         try {
             removeMyAuctionsAndOffers();
