@@ -220,7 +220,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
                         return "You have already offered the highest bid!";
                     }
                     if (actual_date.after(auction.get_end_time())) {
-                        if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                         if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
                             return "You can't do a bid! The Auction is ended with no winner!";
                         } else {
                             return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
