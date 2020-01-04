@@ -42,7 +42,7 @@ public class Auction implements Serializable {
         _description = desc;
         max_bid = res_price;
         second_max_bid = res_price;
-        bid_id=0;
+        bid_id=-1;
         users = new HashSet<PeerAddress>();
     }
 
