@@ -583,7 +583,6 @@ void removeABidAsANonCreator(){
 ```
   void DuplicateAuctionError() {
         try {
-            //CREATE A DATE
             Date date = null;
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             date = formatter.parse("22/12/2030");
