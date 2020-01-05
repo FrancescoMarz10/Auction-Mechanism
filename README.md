@@ -91,7 +91,7 @@ Il metodo createAuction prende in input i seguenti valori:
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Controlla che non sia già esistente un asta con il medesimo nome 
 2. Crea una nuova asta con tutti parametri ricevuti.
-3. Ricerca la presenza della lista dei nomoi delle aste all'interno della dht.
+3. Ricerca la presenza della lista dei nomi delle aste all'interno della dht.
 4. In caso affermativo ottiene tale lista ed aggiunge il nome dell'asta ad essa e la ricarica nella dht. 
 5. Infine, carica l'intera asta nella dht.
     
