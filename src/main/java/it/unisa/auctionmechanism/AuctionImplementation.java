@@ -232,7 +232,13 @@ public class AuctionImplementation implements AuctionMechanism {
         return null;
     }
 
-    //Send a new message when a bid is outdated.
+    /**
+     * Send a new message when a bid is outdated, your bid has been exceeded, either the auction creator or the highest bidder has left the network.
+     * @param _obj, the text of the message.
+     * @param _auction_name a String, the name of the auction.
+     * @param type an integer value, the type of the message.
+     * @return true if the message is correctly sended, false otherwise.
+     */
     public boolean sendMessage(Object _obj,String _auction_name, int type) throws IOException, ClassNotFoundException {
 
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
@@ -277,7 +283,10 @@ public class AuctionImplementation implements AuctionMechanism {
         return true;
     }
 
-    //Leaving the net. Removing every auction created and every bid done.
+    /**
+     * Leave the net. Remove every auction created and every bid done thank to the function removeMyAuctionsAndOffers().
+     * @return true if the peer left the network correctly.
+     */
     public boolean exit(){
         try {
             removeMyAuctionsAndOffers();
@@ -289,7 +298,10 @@ public class AuctionImplementation implements AuctionMechanism {
         return false;
     }
 
-    //Visualize all the auctions and their informations.
+    /**
+     * Visualize all the auctions and their informations.
+     * @return a String value that is the status of all the auctions.
+     */
     public String checkAllAuctions() throws IOException, ClassNotFoundException {
 
         String all_auctions = "";
@@ -340,6 +352,11 @@ public class AuctionImplementation implements AuctionMechanism {
 
 
     //Removing an auction. Only the creator can remove an auction.
+     /**
+     * Remove an auction. Only the creator can remove an auction.
+     * @param _auction_name a String, the name of the auction.
+     * @return true if the auction is correctly removed, false otherwise.
+     */
     public boolean removeAnAuction(String _auction_name) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
@@ -377,6 +394,9 @@ public class AuctionImplementation implements AuctionMechanism {
         return false;
     }
 
+     /**
+     * Removes all the auctions and offers made by the peer who left the network.
+     */    
     public void removeMyAuctionsAndOffers() throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
