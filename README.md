@@ -518,9 +518,9 @@ public void O_placeAnOutdatedBid(){
 }
  ```
  
-### 4. Remove A Bid and Remove A Bid As Non Creator
+### 4. Remove An Auction and Remove An Auction As Non Creator
 ```
-public void L_removeABid(){
+public void L_removeAnAuction(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook HP", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1300, "A notebook is a small, portable personal computer (PC)");
@@ -534,7 +534,7 @@ public void L_removeABid(){
 ```
 
 ```
-public void B_removeABidAsANonCreator(){
+public void B_removeAnAuctionAsANonCreator(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook HP", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1300, "A notebook is a small, portable personal computer (PC)");
