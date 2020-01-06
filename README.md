@@ -3,7 +3,7 @@ Un meccanismo di aste basato su una rete P2P. Ogni peer può vendere e acquistar
 #### Autore: Marzullo Francesco   
 #### Matricola: 0522500679
 
-# Tecnologie
+# Tecnologie Utilizzate
 - Java 8
 - Tom P2P
 - JUnit
