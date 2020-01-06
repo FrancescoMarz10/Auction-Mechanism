@@ -476,7 +476,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  
 ### 1. placeABidAsCreator()
   ```
- void placeABidAsCreator(){
+public void M_placeABidAsCreator(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook MSI", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1500, "A notebook is a small, portable personal computer (PC)");
@@ -485,11 +485,11 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+}
  ```
 ### 2. placeABidAsBestOfferer()
 ```
- void placeABidAsBestOfferer(){
+public void H_placeABidAsBestOfferer(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook MSI", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1500, "A notebook is a small, portable personal computer (PC)");
@@ -499,12 +499,12 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+}
 ```
 
 ### 3. placeAnOutdatedBid()
 ```
-  void placeAnOutdatedBid(){
+public void O_placeAnOutdatedBid(){
         try {
             peer0.createAuction("OnePlus", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 800, "New Android Smartphone");
             Thread.sleep(1500);
@@ -515,41 +515,41 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+}
  ```
  
 ### 4. removeABid() and removeABidAsNonCreator()
 ```
- void removeABid(){
+public void L_removeABid(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook HP", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1300, "A notebook is a small, portable personal computer (PC)");
-            assertEquals(true, peer0.removeAnAuction("Notebook HP"));
+            assertTrue( peer0.removeAnAuction("Notebook HP"));
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+}
 
 ```
 
 ```
-void removeABidAsANonCreator(){
+public void B_removeABidAsANonCreator(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook HP", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1300, "A notebook is a small, portable personal computer (PC)");
-            assertEquals(false, peer1.removeAnAuction("Notebook HP"));
+            assertFalse(peer1.removeAnAuction("Notebook HP"));
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+}
 ```
 
 ### 5. auctionWithAWinner() and auctionWithNoWinner()
 
 ```
- void auctionWithAWinner(){
+ public void D_auctionWithAWinner(){
         try {
             Date date = new Date();
             peer0.createAuction("Logitech G430", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 70, "Logitech G430 7.1 surround sound gaming headset with lightweight, performance ear cups, and digital USB balances performance and comfort.");
@@ -561,12 +561,12 @@ void removeABidAsANonCreator(){
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+}
 
 ```
 
 ```
- void auctionWithNoWinner(){
+public void I_auctionWithNoWinner(){
         try {
             Date date = new Date();
             peer0.createAuction("Nintendo Switch", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 300, "Nintendo Switch is a hybrid console between a portable and a home gaming system");
@@ -576,13 +576,14 @@ void removeABidAsANonCreator(){
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
+}
 ```
 
 ### 6. duplicateAuctionError()
 ```
-  void DuplicateAuctionError() {
+ public void C_DuplicateAuctionError() {
         try {
+            //CREATE A DATE
             Date date = null;
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             date = formatter.parse("22/12/2030");
@@ -599,13 +600,13 @@ void removeABidAsANonCreator(){
 
 ### 7. leaveTheNetworkAsCreator()
  ```
- void leaveTheNetworkAsCreator(){
+ public void F_leaveTheNetworkAsCreator(){
         try {
             Date date = new Date();
             peer0.createAuction("Proiettore APEMAN Portatile", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 100, "Il proiettore APEMAN LC550 viene utilizzato principalmente per l'home cinema e i videogiochi, NON consigliato per Powerpoint o presentazioni aziendali.");
 
             Thread.sleep(2000);
-            assertEquals(true, peer0.exit());
+            assertTrue( peer0.exit());
             assertEquals(null, peer0.checkAuction("Proiettore APEMAN Portatile"));
         }
         catch(Exception e) {
@@ -616,24 +617,26 @@ void removeABidAsANonCreator(){
 
 ### 8. leaveTheNetworkAsBestBidder()
 ```
- void leaveTheNetworkAsBestBidder(){
+ public void N_leaveTheNetworkAsBestBidder(){
         try {
             Date date = new Date();
             peer0.createAuction("Play Station 4", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 200, "Console Sony!");
             peer1.placeAbid("Play Station 4", 300);
             peer2.placeAbid("Play Station 4", 350);
             Thread.sleep(2000);
-            assertEquals(true, peer2.exit());
+            assertTrue( peer2.exit());
             assertEquals("The Auction is ended with no winner!", peer0.checkAuction("Play Station 4"));
         }
         catch(Exception e) {
             e.printStackTrace();
         }
+}
+
 ```
 
 ### 9. CheckAllAuctions()
 ```
- void checkAllAuctions(){
+public void E_checkAllAuctions() {
         try {
             Date date = new Date();
             peer0.createAuction("The Witcher 3: Wild Hunt", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 50, "Videogame for PC and Play Station 4");
@@ -645,8 +648,7 @@ void removeABidAsANonCreator(){
                     "Name: Logitech G430, Best Bid: 200.0, Status: ENDED, Description: Logitech G430 7.1 surround sound gaming headset with lightweight, performance ear cups, and digital USB balances performance and comfort.\n" +
                     "Name: The Witcher 3: Wild Hunt, Reserved Price: 50.0, Status: ENDED, Description: Videogame for PC and Play Station 4\n" +
                     "Name: Mountain Bike, Reserved Price: 500.0, Status: ENDED, Description: The mountain bike is a bicycle structured so that it can also move off asphalt roads, both uphill and downhill.\n", peer2.checkAllAuctions());
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -654,7 +656,7 @@ void removeABidAsANonCreator(){
 
 ### 10. multipleBids() and auctionWithOneBidder()
 ```
- void multipleBids(){
+public void G_multipleBids(){
         try {
             Date date = new Date();
             peer0.createAuction("HUAWEI Mediapad T5 Tablet", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 170, "Tablet, Display: 10.1\", Memory: 32 GB, RAM: 3 GB, OS: Android 8.0, Wi-Fi, Black");
@@ -668,11 +670,12 @@ void removeABidAsANonCreator(){
         catch(Exception e) {
             e.printStackTrace();
         }
+}
 ```
 
-```
 
-void auctionWithOneBidder(){
+```
+public void A_auctionWithOneBidder(){
         try {
             Date date = new Date();
             peer0.createAuction("Logitech G431", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 70, "Logitech G430 7.1 surround sound gaming headset with lightweight, performance ear cups, and digital USB balances performance and comfort.");
@@ -684,4 +687,5 @@ void auctionWithOneBidder(){
             e.printStackTrace();
         }
     }
+
  ```
