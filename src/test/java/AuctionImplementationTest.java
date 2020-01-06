@@ -242,7 +242,49 @@ public class AuctionImplementationTest {
         }
     }
 
+    @Test
+    public void P_CheckingANonExistingAuction(){
+        try {
+            assertEquals(null, peer0.checkAuction("Joystick PS4"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Test
+    public void Q_CheckingAnAuctionWithNoBidders(){
+        try {
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2030");
+            date.setHours(11);
+            date.setMinutes(30);
+            peer0.createAuction("Bottiglia Termica", date, 22, "È un contenitore progettato per mantenere a lungo la temperatura del liquido all’interno");
+            assertEquals("The auction is active until "+date+" and the reserved price is: 22.0", peer0.checkAuction("Bottiglia Termica"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void R_CheckingAnAuction(){
+        try {
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2030");
+            date.setHours(11);
+            date.setMinutes(30);
+            peer0.createAuction("Bottiglia Termica", date, 22, "È un contenitore progettato per mantenere a lungo la temperatura del liquido all’interno");
+            peer1.placeAbid("Bottiglia Termica",30);
+            assertEquals("The auction is active until "+date+" and the highest offer is: 30.0", peer0.checkAuction("Bottiglia Termica"));
+            assertEquals("The auction is active until "+date+" and the highest offer is yours with: 30.0", peer1.checkAuction("Bottiglia Termica"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 
