@@ -66,7 +66,7 @@ public class AuctionImplementationTest {
 
 
     @Test
-    public void B_removeABidAsANonCreator(){
+    public void B_removeAnAuctionAsANonCreator(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook HP", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1300, "A notebook is a small, portable personal computer (PC)");
@@ -188,7 +188,7 @@ public class AuctionImplementationTest {
     }
 
     @Test
-    public void L_removeABid(){
+    public void L_removeAnAuction(){
         try {
             Date date = new Date();
             peer0.createAuction("Notebook HP", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1300, "A notebook is a small, portable personal computer (PC)");
