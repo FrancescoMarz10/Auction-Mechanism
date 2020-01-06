@@ -26,12 +26,11 @@ public class AuctionImplementation implements AuctionMechanism {
     ArrayList<String> auctions_names = new ArrayList<String>();
 
 
-    //CONSTRUCTOR
+    //Constructor
     public AuctionImplementation(int id_peer,String _master_peer, final MessageListener _listener) throws Exception {
         peer= new PeerBuilder(Number160.createHash(id_peer)).ports(DEFAULT_MASTER_PORT+id_peer).start();
         dht = new PeerBuilderDHT(peer).start();
 
-        //TO CHECK
         FutureBootstrap fb = peer.bootstrap().inetAddress(InetAddress.getByName(_master_peer)).ports(DEFAULT_MASTER_PORT).start();
         fb.awaitUninterruptibly();
         if(fb.isSuccess()) {
@@ -232,6 +231,7 @@ public class AuctionImplementation implements AuctionMechanism {
         return null;
     }
 
+    //Send a new message when a bid is outdated.
     /**
      * Send a new message when a bid is outdated, your bid has been exceeded, either the auction creator or the highest bidder has left the network.
      * @param _obj, the text of the message.
@@ -298,6 +298,7 @@ public class AuctionImplementation implements AuctionMechanism {
         return false;
     }
 
+
     /**
      * Visualize all the auctions and their informations.
      * @return a String value that is the status of all the auctions.
@@ -352,7 +353,7 @@ public class AuctionImplementation implements AuctionMechanism {
 
 
     //Removing an auction. Only the creator can remove an auction.
-     /**
+    /**
      * Remove an auction. Only the creator can remove an auction.
      * @param _auction_name a String, the name of the auction.
      * @return true if the auction is correctly removed, false otherwise.
@@ -394,9 +395,9 @@ public class AuctionImplementation implements AuctionMechanism {
         return false;
     }
 
-     /**
+    /**
      * Removes all the auctions and offers made by the peer who left the network.
-     */    
+     */
     public void removeMyAuctionsAndOffers() throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
