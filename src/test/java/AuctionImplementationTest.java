@@ -285,6 +285,77 @@ public class AuctionImplementationTest {
             e.printStackTrace();
         }
     }
+    
+    
+
+    @Test
+    public void P_CheckingANonExistingAuction(){
+        try {
+            assertEquals(null, peer0.checkAuction("Joystick PS4"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void Q_CheckingAnAuctionWithNoBidders(){
+        try {
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2030");
+            date.setHours(11);
+            date.setMinutes(30);
+            peer0.createAuction("Bottiglia Termica", date, 22, "È un contenitore progettato per mantenere a lungo la temperatura del liquido all’interno");
+            assertEquals("The auction is active until "+date+" and the reserved price is: 22.0", peer0.checkAuction("Bottiglia Termica"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void R_CheckingAnAuction(){
+        try {
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2030");
+            date.setHours(11);
+            date.setMinutes(30);
+            peer0.createAuction("Bottiglia Termica", date, 22, "È un contenitore progettato per mantenere a lungo la temperatura del liquido all’interno");
+            peer1.placeAbid("Bottiglia Termica",30);
+            assertEquals("The auction is active until "+date+" and the highest offer is: 30.0", peer0.checkAuction("Bottiglia Termica"));
+            assertEquals("The auction is active until "+date+" and the highest offer is yours with: 30.0", peer1.checkAuction("Bottiglia Termica"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void S_placeAnOutdatedBidWithAWinner(){
+        try {
+            peer0.createAuction("Amazon Echo", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 50, "Assistente Vocale di Amazon");
+            peer2.placeAbid("Amazon Echo",60);
+            Thread.sleep(1500);
+            assertEquals("You can't do a bid! The Auction is ended, the winner is 2 with this bid: 60.0 and the price is 50.0", peer1.placeAbid("Amazon Echo", 80));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void T_placeABidLessThenThePrice(){
+        try {
+            peer0.createAuction("Google Home", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 50, "Assistente Vocale di Google");
+            assertEquals("You can't do a bid lesser then the biggest bid!", peer1.placeAbid("Google Home", 40));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 
