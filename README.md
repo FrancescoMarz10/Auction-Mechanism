@@ -474,7 +474,7 @@ public boolean removeAnAuction(String _auction_name) throws IOException, ClassNo
  9. Controlla tutte le aste presenti nella dht
  10. Offerte multiple ed offerta singola ad un'asta
  
-### 1. placeABidAsCreator()
+### 1. Place A Bid As Creator
   ```
 public void M_placeABidAsCreator(){
         try {
@@ -487,7 +487,7 @@ public void M_placeABidAsCreator(){
         }
 }
  ```
-### 2. placeABidAsBestOfferer()
+### 2. Place A Bid As Best Offerer
 ```
 public void H_placeABidAsBestOfferer(){
         try {
@@ -502,7 +502,7 @@ public void H_placeABidAsBestOfferer(){
 }
 ```
 
-### 3. placeAnOutdatedBid()
+### 3. Place An Outdated Bid
 ```
 public void O_placeAnOutdatedBid(){
         try {
@@ -518,7 +518,7 @@ public void O_placeAnOutdatedBid(){
 }
  ```
  
-### 4. removeABid() and removeABidAsNonCreator()
+### 4. Remove A Bid and Remove A Bid As Non Creator
 ```
 public void L_removeABid(){
         try {
@@ -546,7 +546,7 @@ public void B_removeABidAsANonCreator(){
 }
 ```
 
-### 5. auctionWithAWinner() and auctionWithNoWinner()
+### 5. Auction With A Winner and Auction With No Winner
 
 ```
  public void D_auctionWithAWinner(){
@@ -579,7 +579,7 @@ public void I_auctionWithNoWinner(){
 }
 ```
 
-### 6. duplicateAuctionError()
+### 6. Duplicate Auction Error
 ```
  public void C_DuplicateAuctionError() {
         try {
@@ -598,7 +598,7 @@ public void I_auctionWithNoWinner(){
     }
  ```
 
-### 7. leaveTheNetworkAsCreator()
+### 7. Leave The Network As Creator
  ```
  public void F_leaveTheNetworkAsCreator(){
         try {
@@ -615,7 +615,7 @@ public void I_auctionWithNoWinner(){
     }
 ```
 
-### 8. leaveTheNetworkAsBestBidder()
+### 8. Leave The Network As Best Bidder
 ```
  public void N_leaveTheNetworkAsBestBidder(){
         try {
@@ -634,7 +634,7 @@ public void I_auctionWithNoWinner(){
 
 ```
 
-### 9. CheckAllAuctions()
+### 9. Check All Auctions
 ```
 public void E_checkAllAuctions() {
         try {
@@ -654,7 +654,7 @@ public void E_checkAllAuctions() {
     }
 ```
 
-### 10. multipleBids() and auctionWithOneBidder()
+### 10. Multiple Bids and Auction With One Bidder
 ```
 public void G_multipleBids(){
         try {
