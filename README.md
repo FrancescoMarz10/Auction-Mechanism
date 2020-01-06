@@ -3,7 +3,7 @@ Un meccanismo di aste basato su una rete P2P. Ogni peer può vendere e acquistar
 #### Autore: Marzullo Francesco   
 #### Matricola: 0522500679
 
-# Implementazione
+# Sviluppo
 La classe Auction è costituita dalle seguenti variabili di istanza:
 
 - _auction_name, il nome dell'asta
