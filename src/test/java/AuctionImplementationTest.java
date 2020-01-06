@@ -155,6 +155,7 @@ public class AuctionImplementationTest {
 
             Thread.sleep(2000);
             assertEquals("The Auction is ended and the winner is 2 with this bid: 220.0 and the price is 200.0", peer0.checkAuction("HUAWEI Mediapad T5 Tablet"));
+            assertEquals("The Auction is ended and the winner is you, 2, with this bid: 220.0 and the price is 200.0", peer2.checkAuction("HUAWEI Mediapad T5 Tablet"));
         }
         catch(Exception e) {
             e.printStackTrace();
