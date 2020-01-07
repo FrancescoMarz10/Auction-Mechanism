@@ -382,7 +382,6 @@ public class AuctionImplementation implements AuctionMechanism {
                     Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
 
                     if (name.equals(_auction_name) && auction.get_creator() == peer_id) {
-                        sendMessage("The auction "+ name+ " has been deleted!", name,4);
                         auctions_names.remove(name);
 
                         //Removing the auction from the list and in the dht
