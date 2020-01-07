@@ -387,6 +387,7 @@ public class AuctionImplementation implements AuctionMechanism {
                         //Removing the auction from the list and in the dht
                         dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
                         FutureRemove fr = dht.remove(Number160.createHash(_auction_name)).start().awaitUninterruptibly();
+                        sendMessage("The auction "+ name+ " has been deleted!", name,2);
                         return true;
                     }
                 }
