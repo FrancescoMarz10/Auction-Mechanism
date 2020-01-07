@@ -272,7 +272,11 @@ public class AuctionImplementation implements AuctionMechanism {
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
-                        else if(type != 1){
+                        else if(type == 2){
+                            FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
+                            futureDirect.awaitUninterruptibly();
+                        }
+                        else if(type == 3){
                             FutureDirect futureDirect = dht.peer().sendDirect(mypeer).object(_obj).start();
                             futureDirect.awaitUninterruptibly();
                         }
