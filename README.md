@@ -803,7 +803,7 @@ docker run -i --name MASTER-PEER -e MASTERIP="127.0.0.1" -e ID=0 auctionmechanis
 La variabile d'ambienbte MASTERIPè l'indirizzo ip del master peer e la variabile d'ambiente ID è l'id unico del peer. Ricorda che è necessario avviare il master peer con ID=0. 
 
 ### Avviare un Peer Generico
-Una volta avviato il Master Peer è possibile avviare altri Peer grazie all'istruzione seguente:
+Una volta avviato il Master Peer è possibile avviare altri Peer grazie all'istruzione seguente e selezionando un ID univoco:
 ```
 docker run -i --name PEER-1 -e MASTERIP="172.17.0.2" -e ID=1 auctionmechanism
 ```
