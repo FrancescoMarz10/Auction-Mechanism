@@ -788,7 +788,7 @@ public void T_placeABidLessThenThePrice(){
         }
 }
 ```
-# Building Auction Mechanism
+# Come Buildare Auction Mechanism
 
 ### In un Container Docker
 La prima operazione da eseguire nel terminale consiste nell'effettuare la build del docker container grazie alla seguente istruzione:
