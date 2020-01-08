@@ -223,7 +223,7 @@ public class AuctionImplementation implements AuctionMechanism {
 
                         return "The auction is active until " + auction.get_end_time() + " and the highest offer is yours with: " + auction.getMax_bid();
                     } else {
-                        return "You can't do a bid lesser then the biggest bid!";
+                        return "You can't do a bid lower then the biggest bid!";
                     }
                 }
             }
