@@ -251,6 +251,10 @@ Il metodo removeAnAuction permette al creatore di un asta, utilizzandone il nome
 #### Metodo exit
 Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create, resettate tutte le aste in cui è il miglior offerente ed i partecipanti a queste vengono avvisati tramite un messaggio, grazie al metodo removeMyAuctionsAndOffers().
 
+#### Metodo removeMyAuctionsAndOffers
+Il metodo removeMyAuctionsAndOffers viene richiamato dal metodo exit quando un peer lascia la rete e si preoccupa di eliminare tutte le aste e le offerte realizzate dal peer in questione.
+
+
 # Testing
  I casi di test analizzati sono i seguenti:
  
