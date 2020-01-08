@@ -13,6 +13,31 @@ Autore: Marzullo Francesco - Matricola: 0522500679
 - Docker
 - IntelliJ
 
+# Struttura del Progetto 
+Grazie all'utilizzo di Maven è possibile inserire all'interno del file pome le dipendenze a Tom P2P coem segue:
+```
+<repositories>
+    <repository>
+        <id>tomp2p.net</id>
+         <url>http://tomp2p.net/dev/mvn/</url>
+     </repository>
+</repositories>
+<dependencies>
+   <dependency>
+     <groupId>net.tomp2p</groupId>
+     <artifactId>tomp2p-all</artifactId>
+      <version>5.0-Beta8</version>
+   </dependency>
+</dependencies>
+```
+Il package ```src/main/java/it/unisa/auctionmechanism``` fornisce le seguenti classi Java:
+
+ - MessageListener, un'interfaccia per il listener dei messaggi ricevuti dai peer.
+ - AuctionMechanism, un'interfaccia che definisce i principali metodi del paradigma AuctionMechanism.
+ - Auction, la classe rappresentante l'oggetto asta.
+ - AuctionImplementation, un'implementazione dell'interfaccia AuctionMechanism che sfrutta la libreria Tom P2P.
+ - Example, un esemplio di applicazione della rete di peer in grado di utilizzare il meccanismo di aste sviluppato. 
+
 # Sviluppo
 La classe Auction è costituita dalle seguenti variabili di istanza:
 
