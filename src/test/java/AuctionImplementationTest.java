@@ -50,6 +50,10 @@ public class AuctionImplementationTest {
         peer0.exit();
     }
 
+    /**
+     * Test for an auction with only one bidder. Peer0 creates an auction while peer1 places a bid.
+     * Finally, thanks to the test on checkauction we are able to observe if the best offer is the one just made.
+     */
     @Test
     public void A_auctionWithOneBidder(){
         try {
@@ -64,7 +68,10 @@ public class AuctionImplementationTest {
         }
     }
 
-
+    /**
+     * Peer0 creates an auction while peer1, a simple bidder, tries to eliminate it.
+     * Of course, the auction is only removable by its creator.
+     */
     @Test
     public void B_removeAnAuctionAsANonCreator(){
         try {
@@ -78,7 +85,10 @@ public class AuctionImplementationTest {
     }
 
 
-
+    /**
+     * The peer0 creates an auction and immediately afterwards tries to create a second identical one,
+     * this is not possible because the name of the auction is unique.
+     */
     @Test
     public void C_DuplicateAuctionError() {
         try {
@@ -96,6 +106,11 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 creates an auction. Peer1 makes an offer, which is exceeded by the offer from peer2. Finally the auction expires.
+     * The method checks that the actual winner is the highest bidder at the auction ended with his bid
+     * and that he must pay the price offered by the second highest bidder.
+     */
     @Test
     public void D_auctionWithAWinner(){
         try {
@@ -111,6 +126,10 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Two new auctions are created from peer0 and peer1.
+     * Subsequently the CheckAllAuctions method is invoked which prints all the auctions present in the DHT and their most important information.
+     */
     @Test
     public void E_checkAllAuctions() {
         try {
@@ -129,6 +148,10 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * The peer0 creates an auction, but subsequently leaves the network.
+     * The method verifies that the exit is successful and that the auction created by that peer is deleted.
+     */
     @Test
     public void F_leaveTheNetworkAsCreator(){
         try {
@@ -144,6 +167,11 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 creates an auction, and peer1, peer3 and peer2 make a bid in sequence.
+     * Subsequently the auction expires and the method checks that there is the correct winner
+     * and checks the correctness of the strings returned to both the winner and the creator.
+     */
     @Test
     public void G_multipleBids(){
         try {
@@ -162,6 +190,10 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 creates an auction, and peer1 places a bid.
+     * Subsequently, the same peer1 tries to make a second offer, but cannot already be the best bidder.
+     */
     @Test
     public void H_placeABidAsBestOfferer(){
         try {
@@ -175,6 +207,9 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 creates an auction but no bidding takes place. So the auction ends without winners.
+     */
     @Test
     public void I_auctionWithNoWinner(){
         try {
@@ -188,6 +223,9 @@ public class AuctionImplementationTest {
         }
     }
 
+     /**
+     * Peer0 creates an auction and then tries to remove it. The method checks that removal is successful.
+     */
     @Test
     public void L_removeAnAuction(){
         try {
@@ -200,6 +238,10 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 creates an auction and then tries to bid on its own auction.
+     * Of course this is not possible and is signaled by a special string returned.
+     */
     @Test
     public void M_placeABidAsCreator(){
         try {
@@ -212,6 +254,12 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 creates an auction and then peer1 and peer2 make bids in sequence.
+     * Peer2, or the highest bidder, leaves the network.
+     * So the auction resets the current best offer at the starting price and warns the other participants with a message.
+     * Subsequently the auction expires without bids and therefore without having a winner.
+     */
     @Test
     public void N_leaveTheNetworkAsBestBidder(){
         try {
@@ -228,7 +276,11 @@ public class AuctionImplementationTest {
         }
     }
 
-    //placing a bid for a OnePlus, but the auction is outdated.
+    /**
+     * The peer0 creates an auction, but it expires without having received bids.
+     * After the auction has expired the peer1 tries to place a bid, but is warned via the return string that it is no longer possible to bid.
+     * Finally by checking the status of the auction it is possible to verify the absence of a winner.
+     */
     @Test
     public void O_placeAnOutdatedBid(){
         try {
@@ -244,7 +296,9 @@ public class AuctionImplementationTest {
     }
 
 
-
+    /**
+     * The peer0 tries to check the status of a non-existent auction. The return value is null.
+     */
     @Test
     public void P_CheckingANonExistentAuction(){
         try {
@@ -255,6 +309,10 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * The peer0 tries to check the status of an auction that has not received any bids.
+     * A string is returned with the information relating to it and indicating the presence of the reserved price as the maximum offer value.
+     */
     @Test
     public void Q_CheckingAnAuctionWithNoBidders(){
         try {
@@ -271,6 +329,11 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 tries to check the status of an auction that has received a bid from peer1.
+     * A string is returned with the information relating to it and indicating the presence of the best offer.
+     * The method is tested by both the creator and the highest bidder to show the different strings returned.
+     */
     @Test
     public void R_CheckingAnAuction(){
         try {
@@ -289,7 +352,10 @@ public class AuctionImplementationTest {
         }
     }
 
-
+    /**
+     * Peer0 creates an auction. Subsequently, peer2 makes an offer after which the auction expires.
+     * Then peer1 tries to bid but the returned string shows that the auction has ended and that the winner is peer2 with its prices.
+     */
     @Test
     public void S_placeAnOutdatedBidWithAWinner(){
         try {
@@ -303,6 +369,10 @@ public class AuctionImplementationTest {
         }
     }
 
+    /**
+     * Peer0 creates an auction. Subsequently, peer1 makes a lower offer than the reserved price.
+     * The returned string shows that this is not possible.
+     */
     @Test
     public void T_placeABidLowerThenThePrice(){
         try {
