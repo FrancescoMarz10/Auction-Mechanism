@@ -86,8 +86,8 @@ public class AuctionImplementationTest {
 
 
     /**
-     * The peer0 creates an auction and immediately afterwards tries to create a second identical one,
-     * this is not possible because the name of the auction is unique.
+     *The peer0 creates an auction and immediately afterwards tries to create a second identical one,
+     *this is not possible because the name of the auction is unique.
      */
     @Test
     public void C_DuplicateAuctionError() {
@@ -159,13 +159,14 @@ public class AuctionImplementationTest {
             peer0.createAuction("Proiettore APEMAN Portatile", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 100, "Il proiettore APEMAN LC550 viene utilizzato principalmente per l'home cinema e i videogiochi, NON consigliato per Powerpoint o presentazioni aziendali.");
 
             Thread.sleep(2000);
-            assertTrue( peer0.exit());
+            assertTrue(peer0.exit());
             assertEquals(null, peer0.checkAuction("Proiettore APEMAN Portatile"));
         }
         catch(Exception e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Peer0 creates an auction, and peer1, peer3 and peer2 make a bid in sequence.
@@ -223,7 +224,7 @@ public class AuctionImplementationTest {
         }
     }
 
-     /**
+    /**
      * Peer0 creates an auction and then tries to remove it. The method checks that removal is successful.
      */
     @Test
@@ -294,7 +295,6 @@ public class AuctionImplementationTest {
             e.printStackTrace();
         }
     }
-
 
     /**
      * The peer0 tries to check the status of a non-existent auction. The return value is null.
