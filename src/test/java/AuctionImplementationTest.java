@@ -246,7 +246,7 @@ public class AuctionImplementationTest {
 
 
     @Test
-    public void P_CheckingANonExistingAuction(){
+    public void P_CheckingANonExistentAuction(){
         try {
             assertEquals(null, peer0.checkAuction("Joystick PS4"));
         }
@@ -304,10 +304,10 @@ public class AuctionImplementationTest {
     }
 
     @Test
-    public void T_placeABidLessThenThePrice(){
+    public void T_placeABidLowerThenThePrice(){
         try {
             peer0.createAuction("Google Home", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 50, "Assistente Vocale di Google");
-            assertEquals("You can't do a bid lesser then the biggest bid!", peer1.placeAbid("Google Home", 40));
+            assertEquals("You can't do a bid lower then the biggest bid!", peer1.placeAbid("Google Home", 40));
         }
         catch(Exception e) {
             e.printStackTrace();
