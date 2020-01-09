@@ -36,7 +36,7 @@ Il package ```src/main/java/it/unisa/auctionmechanism``` fornisce le seguenti cl
  - AuctionMechanism, un'interfaccia che definisce i principali metodi del paradigma AuctionMechanism.
  - Auction, la classe rappresentante l'oggetto asta.
  - AuctionImplementation, un'implementazione dell'interfaccia AuctionMechanism che sfrutta la libreria Tom P2P.
- - Example, un esemplio di applicazione della rete di peer in grado di utilizzare il meccanismo di aste sviluppato. 
+ - Example, un esempio di applicazione della rete di peer in grado di utilizzare il meccanismo di aste sviluppato. 
 
 # Sviluppo
 La classe Auction è costituita dalle seguenti variabili di istanza:
