@@ -1,4 +1,4 @@
-# Auction Mechanism
+# Auction Mechanism [![Build Status](https://travis-ci.org/FrancescoMarz10/Auction-Mechanism.svg?branch=master)](https://travis-ci.org/FrancescoMarz10/Auction-Mechanism)
 Un meccanismo di aste basato su una rete P2P. Ogni peer può vendere e acquistare beni utilizzando un meccanismo di Second-Price Auctions (EBay). Il miglior offerente ottiene il primo slot, ma paga il prezzo offerto dal secondo miglior offerente. Il sistema consente agli utenti di creare una nuova asta (con un orario di fine, un prezzo di vendita riservato e una descrizione), controllare lo stato di un'asta e infine fare una nuova offerta per un'asta. Come descritto nell'API Java di AuctionMechanism.
 
 ```
