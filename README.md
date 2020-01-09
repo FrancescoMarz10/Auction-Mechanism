@@ -39,7 +39,7 @@ Il package ```src/main/java/it/unisa/auctionmechanism``` fornisce le seguenti cl
  - Example, un esempio di applicazione della rete di peer in grado di utilizzare il meccanismo di aste sviluppato. 
 
 # Sviluppo
-La classe Auction è costituita dalle seguenti variabili di istanza:
+La classe *Auction* è costituita dalle seguenti variabili di istanza:
 
 - _auction_name, il nome dell'asta
 - _creator, l'id del peer creatore dell'asta
@@ -62,7 +62,7 @@ L'interfaccia fornita per lo sviluppo del progetto AuctionMechanism è costituit
 3. placeAbid: per fare un'offerta
 
 #### Metodo createAuction
-Il metodo createAuction prende in input i seguenti valori:
+Il metodo *createAuction* prende in input i seguenti valori:
 
     - _auction_name, nome dell'asta
     - _end_time, tempo di terminazione dell'asta
@@ -101,7 +101,7 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
 ```
 
 #### Metodo checkAuction
-Il metodo checkAuction prende in input solo il nome dell'asta da ricercare con l'obiettivo di verificarne la presenza all'interno della lista delle aste ed il suo eventuale stato.
+Il metodo *checkAuction* prende in input solo il nome dell'asta da ricercare con l'obiettivo di verificarne la presenza all'interno della lista delle aste ed il suo eventuale stato.
 
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista dei nomi delle aste all'interno della dht
@@ -161,7 +161,7 @@ public String checkAuction(String _auction_name) throws IOException, ClassNotFou
 
 ```
 #### Metodo placeABid
-Il metodo placeABid prende in input il nome dell'asta ed il valore dell'offerta che si desidera presentare.
+Il metodo *placeABid* prende in input il nome dell'asta ed il valore dell'offerta che si desidera presentare.
 
 Tale funzione si sviluppa attraverso i seguenti step:
 1. Ricerca la presenza della lista dei nomi delle aste all'interno della dht
@@ -239,20 +239,20 @@ Tale funzione si sviluppa attraverso i seguenti step:
 ## Altri metodi implementati
 
 #### Metodo sendMessage
-Il metodo sendMessage viene utilizzato per notificare un peer che la sua offerta è stata appena superata da una nuova proposta di valore maggiore, oppure per avvisare i partecipanti ad un asta dell'improvviso abbandono della rete da parte del creatore dell'asta e dell'eliminazione di quest'ultima.
+Il metodo *sendMessage* viene utilizzato per notificare un peer che la sua offerta è stata appena superata da una nuova proposta di valore maggiore, oppure per avvisare i partecipanti ad un asta dell'improvviso abbandono della rete da parte del creatore dell'asta e dell'eliminazione di quest'ultima.
 Questo metodo prende in input il messaggio da recapitare, il nome dell'asta a cui fa riferimento ed il tipo di messaggio da inviare.
 
 #### Metodo  checkAllAuctions
-Il metodo checkAllAuctions viene utilizzato per ottenere la completa lista delle aste attualmente presenti e alcune informazioni fondamentali ad esse relate, come lo stato e l'attuale migliore offerta.
+Il metodo *checkAllAuctions* viene utilizzato per ottenere la completa lista delle aste attualmente presenti e alcune informazioni fondamentali ad esse relate, come lo stato e l'attuale migliore offerta.
 
 #### Metodo removeAnAuction
-Il metodo removeAnAuction permette al creatore di un asta, utilizzandone il nome ottenuto come parametro, di eliminarla.
+Il metodo *removeAnAuction* permette al creatore di un asta, utilizzandone il nome ottenuto come parametro, di eliminarla.
 
 #### Metodo exit
-Il metodo exit viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create, resettate tutte le aste in cui è il miglior offerente ed i partecipanti a queste vengono avvisati tramite un messaggio, grazie al metodo removeMyAuctionsAndOffers().
+Il metodo *exit* viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create, resettate tutte le aste in cui è il miglior offerente ed i partecipanti a queste vengono avvisati tramite un messaggio, grazie al metodo removeMyAuctionsAndOffers().
 
 #### Metodo removeMyAuctionsAndOffers
-Il metodo removeMyAuctionsAndOffers viene richiamato dal metodo exit quando un peer lascia la rete e si preoccupa di eliminare tutte le aste e le offerte realizzate dal peer in questione.
+Il metodo *removeMyAuctionsAndOffers* viene richiamato dal metodo exit quando un peer lascia la rete e si preoccupa di eliminare tutte le aste e le offerte realizzate dal peer in questione.
 
 
 # Testing
