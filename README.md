@@ -290,7 +290,7 @@ Come seconda operazione dopo la build del container, bisogna avviare il master p
 ```
 docker run -i --name MASTER-PEER -e MASTERIP="127.0.0.1" -e ID=0 auctionmechanism
 ```
-La variabile d'ambienbte MASTERIP è l'indirizzo ip del master peer e la variabile d'ambiente ID è l'id unico del peer. Ricorda che è necessario avviare il master peer con ID=0. 
+La variabile d'ambiente MASTERIP è l'indirizzo ip del master peer e la variabile d'ambiente ID è l'id unico del peer. Ricorda che è necessario avviare il master peer con ID=0. 
 
 ### Avviare un Peer Generico
 Una volta avviato il Master Peer è possibile avviare altri Peer grazie all'istruzione seguente e selezionando un ID univoco:
