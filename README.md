@@ -261,16 +261,21 @@ Il metodo removeMyAuctionsAndOffers viene richiamato dal metodo exit quando un p
  1. Offerta realizzata dal creatore dell'asta
  2. Offerta realizzata dall'attuale maggior offerente
  3. Offerta realizzata dopo la scadenza dell'asta
- 4. Rimozione di un asta (da creatore e da semplice partecipante)
- 5. Asta con e senza vincitore
- 6. Creazione di un asta già presente
- 7. Abbandonare la rete da creatore di almeno un'asta
- 8. Abbandonare la rete da miglior offerente su un'asta
- 9. Controlla tutte le aste presenti nella dht
- 10. Offerte multiple ed offerta singola ad un'asta
- 11. Controllare lo stato di un'asta non esistente, di un asta senza offerenti e di un'asta attiva con offerenti
- 12. Effettuare un'offerta ad un'asta già terminata con un vincitore
- 13. Effettuare un offerta minore del minimo prezzo
+ 4. Rimozione di un'asta da parte del creatore
+ 5. Rimozione di un'asta da parte di un semplice partecipante
+ 6. Asta terminata con vincitore
+ 7. Asta termianta senza vincitore
+ 8. Creazione di un asta già presente nella dht
+ 9. Abbandonare la rete da creatore di almeno un'asta
+ 10. Abbandonare la rete da miglior offerente su un'asta
+ 11. Controlla tutte le aste presenti nella dht
+ 12. Asta terminata con offerte multiple 
+ 13. Asta terminata con una singola offerta
+ 14. Controllare lo stato di un'asta non esistente 
+ 15. Controllare lo stato di un'asta senza offerenti
+ 16. Controllare lo stato di un'asta attiva con offerenti
+ 17. Effettuare un'offerta ad un'asta già terminata con un vincitore
+ 18. Effettuare un'offerta minore del minimo prezzo
  
 
 # Come Buildare Auction Mechanism
