@@ -313,9 +313,9 @@ CMD /usr/bin/java -jar ${artifact} -m $MASTERIP -id $ID
 
     I parametri presenti sono:
 
-         - L'URL della repository di GitHub
-         - Il nome del progetto
-         - L'artifact ID e la versione di Maven
+         - L'*URL* della repository di GitHub
+         - Il *nome* del progetto
+         - L'*artifact ID* e la *versione* di Maven
 
     Tali parametri sono utilizzabili per progettare un file di build parametrico. In Docker, i parametri possono essere passati usando le opzioni ENV o ARG. Entrambi sono impostati usando l'opzione --build-arg sulla riga di comando durante l'operazione docker build.
 
@@ -331,7 +331,7 @@ La prima operazione da eseguire nel terminale consiste nell'effettuare la build 
 ```
 docker build --build-arg url=https://github.com/FrancescoMarz10/Auction-Mechanism.git --build-arg project=Auction-Mechanism --build-arg artifactid=auctionmechanism --build-arg version=1.0-jar-with-dependencies -t auctionmechanism --no-cache .
 ```
-L'esecuzione di build del docker prevede l'inserimento tramite la dicitura ```--build-args``` dei parametri da passare in input al dockerfile.
+L'esecuzione di build del docker prevede l'inserimento tramite la dicitura ```--build-arg``` dei parametri da passare in input al dockerfile.
 
 ### Avviare il Master Peer
 Come seconda operazione dopo la build del container, bisogna avviare il master peer tramite la seguente riga di codice all'interno della linea di comando in modalità interactive (-i) e con due (-e) variabili di ambiente:
