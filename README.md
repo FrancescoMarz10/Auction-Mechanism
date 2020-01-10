@@ -315,7 +315,7 @@ CMD /usr/bin/java -jar ${artifact} -m $MASTERIP -id $ID
 
          - L'URL della repository di GitHub
          - Il nome del progetto
-         - L'*artifact ID e la versione di Maven
+         - L'artifact ID e la versione di Maven
 
     Tali parametri sono utilizzabili per progettare un file di build parametrico. In Docker, i parametri possono essere passati usando le opzioni ENV o ARG. Entrambi sono impostati usando l'opzione --build-arg sulla riga di comando durante l'operazione docker build.
 
