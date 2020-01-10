@@ -277,14 +277,61 @@ Il metodo *removeMyAuctionsAndOffers* viene richiamato dal metodo exit quando un
  17. Effettuare un'offerta ad un'asta già terminata con un vincitore
  18. Effettuare un'offerta minore del minimo prezzo
  
+# Dockerfile
+
+Il Dockerfile è stato realizzato come segue:
+```
+FROM alpine/git as clone
+ARG url
+WORKDIR /app
+RUN git clone ${url}
+
+FROM maven:3.5-jdk-8-alpine as builder
+ARG project 
+WORKDIR /app
+COPY --from=clone /app/${project} /app
+RUN mvn clean install
+
+FROM openjdk:8-jre-alpine
+ARG artifactid
+ARG version
+ENV artifact ${artifactid}-${version}.jar
+WORKDIR /app
+ENV MASTERIP=127.0.0.1
+ENV ID=0
+ENV TZ="Europe/Rome"
+COPY --from=builder /app/target/${artifact} /app
+
+CMD /usr/bin/java -jar ${artifact} -m $MASTERIP -id $ID
+```
+
+ - Data la struttura del file esso può essere utilizzato per buildare qualsiasi app con le seguenti funzionalità:
+
+     - Il codice sorgente è ospitato su GitHub.
+     - Lo strumento di compilazione è Maven.
+     - L'output risultante è un file JAR eseguibile.
+     
+I parametri presenti sono:
+     - L'URL della repository di GitHub
+     - Il nome del progetto
+     - L'artifact ID e la versione di Maven
+
+Tali parametri sono utilizzabili per progettare un file di build parametrico. In Docker, i parametri possono essere passati usando le opzioni ENV o ARG. Entrambi sono impostati usando l'opzione --build-arg sulla riga di comando durante l'operazione docker build.
+
+ - Solitamente le fasi di build sono referenziate tramite il loro indice (a partire da 0). Sebbene ciò non rappresenti un problema,risulta utile per una migliore leggibilità del file avere qualcosa di semanticamente significativo. Docker ci consente di etichettare le fasi e fa riferimento a tali etichette nelle fasi successive.
+ 
+ - Inoltre, è stata inserita la variabile d'ambiente ENV TZ="Europe/Rome", per inizializzare il fuso orario locale.
+ 
 
 # Come Buildare Auction Mechanism
 
 ### In un Container Docker
 La prima operazione da eseguire nel terminale consiste nell'effettuare la build del docker container grazie alla seguente istruzione:
 ```
-docker build --no-cache -t auctionmechanism .
+docker build --build-arg url=https://github.com/FrancescoMarz10/Auction-Mechanism.git --build-arg project=Auction-Mechanism --build-arg artifactid=auctionmechanism --build-arg version=1.0-jar-with-dependencies -t auctionmechanism --no-cache .
 ```
+L'esecuzione di build del docker prevede l'inserimento tramite la dicitura ```--build-args``` dei parametri da passare in input al dockerfile.
+
 ### Avviare il Master Peer
 Come seconda operazione dopo la build del container, bisogna avviare il master peer tramite la seguente riga di codice all'interno della linea di comando in modalità interactive (-i) e con due (-e) variabili di ambiente:
 ```
