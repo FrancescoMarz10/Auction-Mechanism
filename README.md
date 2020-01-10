@@ -319,7 +319,7 @@ CMD /usr/bin/java -jar ${artifact} -m $MASTERIP -id $ID
 
     Tali parametri sono utilizzabili per progettare un file di build parametrico. In Docker, i parametri possono essere passati usando le opzioni ENV o ARG. Entrambi sono impostati usando l'opzione --build-arg sulla riga di comando durante l'operazione docker build.
 
- - Solitamente le fasi di build sono referenziate tramite il loro indice (a partire da 0). Sebbene ciò non rappresenti un problema,risulta utile per una migliore leggibilità del file avere qualcosa di semanticamente significativo. Docker ci consente di etichettare le fasi e fa riferimento a tali etichette nelle fasi successive.
+ - Solitamente le fasi di build sono referenziate tramite il loro indice (a partire da 0). Sebbene ciò non rappresenti un problema, risulta utile per una migliore leggibilità del file avere qualcosa di semanticamente significativo. Docker ci consente di etichettare le fasi e fa riferimento a tali etichette nelle fasi successive.
  
  - Inoltre, è stata inserita la variabile d'ambiente ENV TZ="Europe/Rome", per inizializzare il fuso orario locale.
  
