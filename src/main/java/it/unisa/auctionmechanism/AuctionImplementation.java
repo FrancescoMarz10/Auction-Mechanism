@@ -423,7 +423,7 @@ public class AuctionImplementation implements AuctionMechanism {
                                 removeAnAuction(name);
                             }
                             if(auction.getBid_id()==peer_id){
-                                auction.setBid_id(0);
+                                auction.setBid_id(-1);
                                 auction.setMax_bid(auction._reserved_price);
                                 auction.getUsers().remove(peer.peerAddress());
                                 dht.put(Number160.createHash(name)).data(new Data(auction)).start().awaitUninterruptibly();
