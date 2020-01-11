@@ -425,15 +425,22 @@ public class AuctionImplementation implements AuctionMechanism {
                             }
                             
                             if(auction.get_creator()==peer_id){
-                                sendMessage("The auction "+ name+ " has been deleted because the creator left the network!", name,2);
-                                removeAnAuction(name);
+                                Date actual_date = new Date();
+                                if (!actual_date.after(auction.get_end_time())) {
+                                    System.out.println(auction.get_auction_name());
+                                    sendMessage("The auction "+ name+ " has been deleted because the creator left the network!", name,2);
+                                    removeAnAuction(name);
+                                }
                             }
                             if(auction.getBid_id()==peer_id){
-                                auction.setBid_id(-1);
-                                auction.setMax_bid(auction._reserved_price);
-                                auction.getUsers().remove(peer.peerAddress());
-                                dht.put(Number160.createHash(name)).data(new Data(auction)).start().awaitUninterruptibly();
-                                sendMessage("The best bid for the auction "+ name+ " has been resetted because the best bidder left the network!", name,3);
+                                Date actual_date = new Date();
+                                if (!actual_date.after(auction.get_end_time())) {
+                                    auction.setBid_id(-1);
+                                    auction.setMax_bid(auction._reserved_price);
+                                    auction.getUsers().remove(peer.peerAddress());
+                                    dht.put(Number160.createHash(name)).data(new Data(auction)).start().awaitUninterruptibly();
+                                    sendMessage("The best bid for the auction "+ name+ " has been resetted because the best bidder left the network!", name,3);
+                                }
                             }
                         }
                     }
