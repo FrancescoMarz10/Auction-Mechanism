@@ -62,8 +62,8 @@ The interface provided for the development of the AuctionMechanism project consi
 
 #### createAuction Method
 The *createAuction* method takes the following values as input:
-
-     - _auction_name, name of the auction
+    
+     - _auction_name, name of the auction
      - _end_time, auction end time
      - _reserved_price, starting price of the auction
      - _description, description of the object in auction
