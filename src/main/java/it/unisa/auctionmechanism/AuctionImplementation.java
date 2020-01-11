@@ -420,9 +420,9 @@ public class AuctionImplementation implements AuctionMechanism {
                             Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
                           
                             Date actual_date = new Date();
-                            if (actual_date.after(auction.get_end_time())) {
-                                return;
-                            }
+                           
+                              
+   
                             
                             if(auction.get_creator()==peer_id){
                                
