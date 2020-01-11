@@ -69,6 +69,7 @@ The *createAuction* method takes the following values as input:
      - _description, description of the object in auction
     
 This function develops through the following steps:
+
     1. Check that an auction with the same name does not already exist
     2. Create a new auction with all parameters received.
     3. Search for the presence of the list of auction names within the dht.
@@ -103,6 +104,7 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
 The *checkAuction* method takes as input only the name of the auction to be searched with the aim of verifying its presence in the auction list and its possible status.
 
 This function develops through the following steps:
+
     1. Search for the presence of the list of auction names within the dht
     2. If the search obtains an affirmative result, download the entire list, otherwise create a new one to upload to the dht
     3. Once the list is obtained, check for an auction with the name obtained as a parameter
@@ -163,6 +165,7 @@ public String checkAuction(String _auction_name) throws IOException, ClassNotFou
 The *placeABid* method takes as input the name of the auction and the value of the offer you wish to present.
 
 This function develops through the following steps:
+
     1. Search for the presence of the list of auction names within the dht
     2. If the search yields an affirmative result, download the entire list
     3. Once the list is obtained, check for an auction with the name obtained as a parameter
