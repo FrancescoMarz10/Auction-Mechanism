@@ -425,7 +425,7 @@ public class AuctionImplementation implements AuctionMechanism {
                             }
                             
                             if(auction.get_creator()==peer_id){
-                                Date actual_date = new Date();
+                               
                                 if (!actual_date.after(auction.get_end_time())) {
                                     System.out.println(auction.get_auction_name());
                                     sendMessage("The auction "+ name+ " has been deleted because the creator left the network!", name,2);
@@ -433,7 +433,7 @@ public class AuctionImplementation implements AuctionMechanism {
                                 }
                             }
                             if(auction.getBid_id()==peer_id){
-                                Date actual_date = new Date();
+                              
                                 if (!actual_date.after(auction.get_end_time())) {
                                     auction.setBid_id(-1);
                                     auction.setMax_bid(auction._reserved_price);
