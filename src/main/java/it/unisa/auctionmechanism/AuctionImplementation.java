@@ -119,7 +119,7 @@ public class AuctionImplementation implements AuctionMechanism {
                         if (actual_date.after(auction.get_end_time())) {
                             //Checking if the auction is ended..
 
-                            if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                            if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
                                 return "The Auction is ended with no winner!";
                             } else {
                                 if (auction.getBid_id() == peer_id) {
