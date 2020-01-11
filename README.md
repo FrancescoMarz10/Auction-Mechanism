@@ -321,7 +321,7 @@ CMD /usr/bin/java -jar ${artifact} -m $MASTERIP -id $ID
 
  - Solitamente le fasi di build sono referenziate tramite il loro indice (a partire da 0). Sebbene ciò non rappresenti un problema, risulta utile per una migliore leggibilità del file avere qualcosa di semanticamente significativo. Docker ci consente di etichettare le fasi e fa riferimento a tali etichette nelle fasi successive.
  
- - Inoltre, è stata inserita la variabile d'ambiente ENV TZ="Europe/Rome", per inizializzare il fuso orario locale.
+ - Inoltre, è stata inserita la variabile d'ambiente ENV TZ="Europe/Rome", per inizializzare il fuso orario con quello locale.
  
 
 # Come Buildare Auction Mechanism
