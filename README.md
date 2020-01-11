@@ -64,9 +64,9 @@ The interface provided for the development of the AuctionMechanism project consi
 The *createAuction* method takes the following values as input:
     
      - _auction_name, name of the auction
-     - _end_time, auction end time
-     - _reserved_price, starting price of the auction
-     - _description, description of the object in auction
+     - _end_time, auction end time
+     - _reserved_price, starting price of the auction
+     - _description, description of the object in auction
     
 This function develops through the following steps:
 1. Check that an auction with the same name does not already exist
