@@ -168,7 +168,7 @@ Tale funzione si sviluppa attraverso i seguenti step:
 2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
 3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
 4. Nel caso in cui l'esito della ricerca abbia esito affermativo, scarica l'asta corrispondente e controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
-5. Nel caso in cui l'asta fosse ancora attiva, chi la propone non è il creatore dell'asta e la nuova offerta supera quella attuale aggiorna tutte le informazioni relative alla nuova proposta ed al suo autore.
+5. Nel caso in cui l'asta fosse ancora attiva, chi la propone non è il creatore o il miglior offerente dell'asta e la nuova offerta supera quella attuale aggiorna tutte le informazioni relative alla nuova proposta ed al suo autore.
 6. Aggiorna l'asta all'interno della dht così da rendere le modifiche visibili a tutti i peer.
 
 ##### Implementazione
