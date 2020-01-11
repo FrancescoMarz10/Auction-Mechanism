@@ -40,17 +40,17 @@ The ```src/main/java/it/unisa/auctionmechanism``` package provides the following
 # Development
 The *Auction* class consists of the following instance variables:
 
-- _auction_name, the name of the auction
-- _creator, the id of the peer creator of the auction
-- _end_time, auction expiration date and time
-- _reserved_price, the starting price
-- _description, description of the product put up for auction
-- *max_bid, the best offer received
-- *second_max_bid, the second best offer received
-- *bid_id, the id of the highest bidder
-- *peerAddress_bid, the peer address of the highest bidder
-- *old_bid_Address, the peer address of the previous highest bidder
-- *users, list of peers participating in the auction
+- *_auction_name, the name of the auction*
+- *_creator, the id of the peer creator of the auction*
+- *_end_time, auction expiration date and time**
+- *_reserved_price, the starting price*
+- *_description, description of the product put up for auction*
+- *max_bid, the best offer received*
+- *second_max_bid, the second best offer received*
+- *bid_id, the id of the highest bidder*
+- *peerAddress_bid, the peer address of the highest bidder*
+- *old_bid_Address, the peer address of the previous highest bidder*
+- *users, list of peers participating in the auction*
 
 
 ## AuctionMechanism Interface
