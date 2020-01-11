@@ -31,11 +31,11 @@ Thanks to the use of Maven it is possible to insert the dependencies to Tom P2P 
 ```
 The ```src/main/java/it/unisa/auctionmechanism``` package provides the following Java classes:
 
-    - MessageListener, an interface for the listener of messages received from peers.
-    - AuctionMechanism, an interface that defines the main methods of the AuctionMechanism paradigm.
-    - Auction, the class representing the auction object.
-    - AuctionImplementation, an implementation of the AuctionMechanism interface that takes advantage of the Tom P2P library.
-    - Example, an example of application of the peer network capable of using the developed auction mechanism.
+   - MessageListener, an interface for the listener of messages received from peers.
+   - AuctionMechanism, an interface that defines the main methods of the AuctionMechanism paradigm.
+   - Auction, the class representing the auction object.
+   - AuctionImplementation, an implementation of the AuctionMechanism interface that takes advantage of the Tom P2P library.
+   - Example, an example of application of the peer network capable of using the developed auction mechanism.
 
 # Development
 The *Auction* class consists of the following instance variables:
