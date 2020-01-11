@@ -257,25 +257,25 @@ The *removeMyAuctionsAndOffers* method is called by the exit method when a peer 
 
 # Testing
 The test cases analyzed are the following:
- 
- 1. Bid made by the creator of the auction
- 2. Bid made by the current highest bidder
- 3. Bid made after the auction deadline
- 4. Removal of an auction by the creator
- 5. Removal of an auction by a simple participant
- 6. Auction ended with winner
- 7. Auction ended without winner
- 8. Creation of an auction already present in the dht
- 9. Leave the network as creator of at least one auction
- 10. Leave the network as the highest bidder on an auction
- 11. Check all the auctions in the dht
- 12. Auction ended with multiple bids
- 13. Auction ended with a single bid
- 14. Check the status of a non-existent auction
- 15. Check the status of an auction without bidders
- 16. Check the status of an active auction with bidders
- 17. Place a bid on an auction that has already ended with a winner
- 18. Make an offer less than the minimum price
+
+1. Bid made by the creator of the auction
+2. Bid made by the current highest bidder
+3. Bid made after the auction deadline
+4. Removal of an auction by the creator
+5. Removal of an auction by a simple participant
+6. Auction ended with winner
+7. Auction ended without winner
+8. Creation of an auction already present in the dht
+9. Leave the network as creator of at least one auction
+10. Leave the network as the highest bidder on an auction
+11. Check all the auctions in the dht
+12. Auction ended with multiple bids
+13. Auction ended with a single bid
+14. Check the status of a non-existent auction
+15. Check the status of an auction without bidders
+16. Check the status of an active auction with bidders
+17. Place a bid on an auction that has already ended with a winner
+18. Make an offer less than the minimum price
  
 # Dockerfile
 The Dockerfile was made as follows:
