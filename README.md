@@ -331,7 +331,7 @@ The first operation to be performed in the terminal is the build of the docker c
 ```
 docker build --build-arg url=https://github.com/FrancescoMarz10/Auction-Mechanism.git --build-arg project=Auction-Mechanism --build-arg artifactid=auctionmechanism --build-arg version=1.0-jar-with-dependencies -t auctionmechanism --no-cache .
 ```
-The build of the docker involves the insertion of the parameters to be passed in input to the dockerfile with the instruction ```--build-arg```.
+The build of the docker involves the insertion of the parameters to be passed in input to the dockerfile with the ```--build-arg``` instruction.
 
 ### Start the Master Peer
 As a second operation after building the container, the master peer must be started via the following line of code within the command line in interactive (-i) mode and with two (-e) environment variables:
