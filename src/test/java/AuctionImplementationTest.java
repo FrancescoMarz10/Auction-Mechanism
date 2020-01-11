@@ -155,8 +155,12 @@ public class AuctionImplementationTest {
     @Test
     public void F_leaveTheNetworkAsCreator(){
         try {
-            Date date = new Date();
-            peer0.createAuction("Proiettore APEMAN Portatile", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 100, "Il proiettore APEMAN LC550 viene utilizzato principalmente per l'home cinema e i videogiochi, NON consigliato per Powerpoint o presentazioni aziendali.");
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2030");
+            date.setHours(11);
+            date.setMinutes(30);
+            peer0.createAuction("Proiettore APEMAN Portatile", date, 100, "Il proiettore APEMAN LC550 viene utilizzato principalmente per l'home cinema e i videogiochi, NON consigliato per Powerpoint o presentazioni aziendali.");
 
             Thread.sleep(2000);
             assertTrue(peer0.exit());
@@ -264,13 +268,17 @@ public class AuctionImplementationTest {
     @Test
     public void N_leaveTheNetworkAsBestBidder(){
         try {
-            Date date = new Date();
-            peer0.createAuction("Play Station 4", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 200, "Console Sony!");
+            Date date = null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            date = formatter.parse("22/12/2030");
+            date.setHours(11);
+            date.setMinutes(30);
+            peer0.createAuction("Play Station 4", date, 200, "Console Sony!");
             peer1.placeAbid("Play Station 4", 300);
             peer2.placeAbid("Play Station 4", 350);
             Thread.sleep(2000);
             assertTrue( peer2.exit());
-            assertEquals("The Auction is ended with no winner!", peer0.checkAuction("Play Station 4"));
+            assertEquals("The auction is active until Sun Dec 22 11:30:00 CET 2030 and the highest offer is: 200.0", peer0.checkAuction("Play Station 4"));
         }
         catch(Exception e) {
             e.printStackTrace();
