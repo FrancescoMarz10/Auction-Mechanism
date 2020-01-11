@@ -272,7 +272,7 @@ public class AuctionImplementationTest {
             peer1.placeAbid("Play Station 4", 300);
             peer2.placeAbid("Play Station 4", 350);
             assertTrue( peer2.exit());
-            Thread.sleep(4000);
+            Thread.sleep(8000);
             assertEquals("The Auction is ended with no winner!", peer0.checkAuction("Play Station 4"));
         }
         catch(Exception e) {
