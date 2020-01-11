@@ -1,11 +1,10 @@
 # Auction Mechanism [![Build Status](https://travis-ci.org/FrancescoMarz10/Auction-Mechanism.svg?branch=master)](https://travis-ci.org/FrancescoMarz10/Auction-Mechanism)
-Un meccanismo di aste basato su una rete P2P. Ogni peer può vendere e acquistare beni utilizzando un meccanismo di Second-Price Auctions (EBay). Il miglior offerente ottiene il primo slot, ma paga il prezzo offerto dal secondo miglior offerente. Il sistema consente agli utenti di creare una nuova asta (con un orario di fine, un prezzo di vendita riservato e una descrizione), controllare lo stato di un'asta e infine fare una nuova offerta per un'asta. Come descritto nell'API Java di AuctionMechanism.
-
+An auction mechanism based on P2P Network. Each peer can sell and buy goods using a Second-Price Auctions (EBay). Each bidder places a bid. The highest bidder gets the first slot, but pays the price bid by the second-highest bidder. The systems allows the users to create new auction (with an ending time, a reserved selling price and a description), check the status of an auction, and eventually place new bid for an auction. As described in the AuctionMechanism Java API.
 ```
 Autore: Marzullo Francesco - Matricola: 0522500679
 ```
 
-# Tecnologie Utilizzate
+# Technologies involved
 - Java 8
 - Tom P2P
 - JUnit
@@ -13,8 +12,8 @@ Autore: Marzullo Francesco - Matricola: 0522500679
 - Docker
 - IntelliJ
 
-# Struttura del Progetto 
-Grazie all'utilizzo di Maven è possibile inserire all'interno del file pome le dipendenze a Tom P2P coem segue:
+# Project Structure
+Thanks to the use of Maven it is possible to insert the dependencies to Tom P2P into the pom file, as follows:
 ```
 <repositories>
     <repository>
@@ -30,53 +29,53 @@ Grazie all'utilizzo di Maven è possibile inserire all'interno del file pome le 
    </dependency>
 </dependencies>
 ```
-Il package ```src/main/java/it/unisa/auctionmechanism``` fornisce le seguenti classi Java:
+The ```src/main/java/it/unisa/auctionmechanism``` package provides the following Java classes:
 
- - MessageListener, un'interfaccia per il listener dei messaggi ricevuti dai peer.
- - AuctionMechanism, un'interfaccia che definisce i principali metodi del paradigma AuctionMechanism.
- - Auction, la classe rappresentante l'oggetto asta.
- - AuctionImplementation, un'implementazione dell'interfaccia AuctionMechanism che sfrutta la libreria Tom P2P.
- - Example, un esempio di applicazione della rete di peer in grado di utilizzare il meccanismo di aste sviluppato. 
+    - MessageListener, an interface for the listener of messages received from peers.
+    - AuctionMechanism, an interface that defines the main methods of the AuctionMechanism paradigm.
+    - Auction, the class representing the auction object.
+    - AuctionImplementation, an implementation of the AuctionMechanism interface that takes advantage of the Tom P2P library.
+    - Example, an example of application of the peer network capable of using the developed auction mechanism.
 
-# Sviluppo
-La classe *Auction* è costituita dalle seguenti variabili di istanza:
+# Development
+The *Auction* class consists of the following instance variables:
 
-- _auction_name, il nome dell'asta
-- _creator, l'id del peer creatore dell'asta
-- _end_time, data e ora di scadenza dell'asta
-- _reserved_price, il tempo di partenza
-- _description, descrizione del prodotto messo all'asta
-- max_bid, la migliore offerta ricevuta
-- second_max_bid, la seconda migliore offerta ricevuta
-- bid_id, l'id del miglior offerente
-- peerAddress_bid, il peer address del miglior offerente
-- old_bid_Address, il peer address del precedente miglior offerente
-- users, lista di peer partecipanti all'asta
+- _auction_name, the name of the auction
+- _creator, the id of the peer creator of the auction
+- _end_time, auction expiration date and time
+- _reserved_price, the departure time
+- _description, description of the product put up for auction
+- *max_bid, the best offer received
+- *second_max_bid, the second best offer received
+- *bid_id, the id of the highest bidder
+- *peerAddress_bid, the peer address of the highest bidder
+- *old_bid_Address, the peer address of the previous highest bidder
+- *users, list of peers participating in the auction
 
 
-## Interfaccia AuctionMechanism
-L'interfaccia fornita per lo sviluppo del progetto AuctionMechanism è costituita dai seguenti metodi:
+## AuctionMechanism Interface
+The interface provided for the development of the AuctionMechanism project consists of the following methods:
 
-1. createAuction: per creare un'asta
-2. checkAuction: per verificare lo stato dell'asta
-3. placeAbid: per fare un'offerta
+1. createAuction: to create an auction
+2. checkAuction: to check the status of the auction
+3. placeAbid: to make an offer
 
-#### Metodo createAuction
-Il metodo *createAuction* prende in input i seguenti valori:
+#### createAuction Method
+The *createAuction* method takes the following values as input:
 
-    - _auction_name, nome dell'asta
-    - _end_time, tempo di terminazione dell'asta
-    - _reserved_price, prezzo di partenza dell'asta
-    - _description, descrizione dell'oggetto in asta
+     - _auction_name, name of the auction
+     - _end_time, auction end time
+     - _reserved_price, starting price of the auction
+     - _description, description of the object in auction
+    
+This function develops through the following steps:
+1. Check that an auction with the same name does not already exist
+2. Create a new auction with all parameters received.
+3. Search for the presence of the list of auction names within the dht.
+4. If so, get this list and add the name of the auction to it and reload it in the dht.
+5. Finally, upload the entire auction to the dht.
     
-Tale funzione si sviluppa attraverso i seguenti step:
-1. Controlla che non sia già esistente un asta con il medesimo nome 
-2. Crea una nuova asta con tutti parametri ricevuti.
-3. Ricerca la presenza della lista dei nomi delle aste all'interno della dht.
-4. In caso affermativo ottiene tale lista ed aggiunge il nome dell'asta ad essa e la ricarica nella dht. 
-5. Infine, carica l'intera asta nella dht.
-    
-##### Implementazione 
+##### Implementation 
 ```
 public boolean createAuction(String _auction_name, Date _end_time, double _reserved_price, String _description) throws IOException, ClassNotFoundException {
 
@@ -100,18 +99,18 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
     }
 ```
 
-#### Metodo checkAuction
-Il metodo *checkAuction* prende in input solo il nome dell'asta da ricercare con l'obiettivo di verificarne la presenza all'interno della lista delle aste ed il suo eventuale stato.
+#### checkAuction Method
+The *checkAuction* method takes as input only the name of the auction to be searched with the aim of verifying its presence in the auction list and its possible status.
 
-Tale funzione si sviluppa attraverso i seguenti step:
-1. Ricerca la presenza della lista dei nomi delle aste all'interno della dht
-2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista, altrimenti ne crea una nuova da caricare successivamente nella dht
-3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
-4. Nel caso in cui l'esito della ricerca abbia esito affermativo scarica l'oggetto 'Auction' corrispondente dalla dht
-5. La funzione, poi, controlla se l'asta è attiva o terminata, in base alla data e all'ora di scadenza
-5. In entrambi i casi restituisce lo stato dell'asta, mostrando l'eventuale vincitore o l'offerta maggiore e tutte le relative informazioni
+This function develops through the following steps:
+1. Search for the presence of the list of auction names within the dht
+2. If the search obtains an affirmative result, download the entire list, otherwise create a new one to upload to the dht
+3. Once the list is obtained, check for an auction with the name obtained as a parameter
+4. In the event that the search results are affirmative, download the corresponding 'Auction' object from the dht
+5. The function then checks whether the auction is active or ended, based on the expiry date and time
+5. In both cases, it returns the status of the auction, showing the eventual winner or the highest bid and all related information
 
-##### Implementazione
+##### Implementation
 ```
 public String checkAuction(String _auction_name) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
@@ -160,18 +159,18 @@ public String checkAuction(String _auction_name) throws IOException, ClassNotFou
     }
 
 ```
-#### Metodo placeABid
-Il metodo *placeABid* prende in input il nome dell'asta ed il valore dell'offerta che si desidera presentare.
+#### placeABid Method
+The *placeABid* method takes as input the name of the auction and the value of the offer you wish to present.
 
-Tale funzione si sviluppa attraverso i seguenti step:
-1. Ricerca la presenza della lista dei nomi delle aste all'interno della dht
-2. Se la ricerca ottiene un risultato affermativo scarica l'intera lista
-3. Una volta ottenuta la lista, controlla la presenza di un asta che abbia il nome ottenuto come parametro
-4. Nel caso in cui l'esito della ricerca abbia esito affermativo, scarica l'asta corrispondente e controlla se essa è attiva o terminata, in base alla data e all'ora di scadenza
-5. Nel caso in cui l'asta fosse ancora attiva, chi la propone non è il creatore o il miglior offerente dell'asta e la nuova offerta supera quella attuale aggiorna tutte le informazioni relative alla nuova proposta ed al suo autore.
-6. Aggiorna l'asta all'interno della dht così da rendere le modifiche visibili a tutti i peer.
+This function develops through the following steps:
+1. Search for the presence of the list of auction names within the dht
+2. If the search yields an affirmative result, download the entire list
+3. Once the list is obtained, check for an auction with the name obtained as a parameter
+4. If the search results are affirmative, download the corresponding auction and check if it is active or ended, based on the expiry date and time.
+5. If the auction is still active, the bidder is not the creator or the best bidder of the auction and the new offer exceeds the current one updates all the information relating to the new proposal and its author.
+6. Update the auction within the dht so as to make the changes visible to all peers.
 
-##### Implementazione
+##### Implementation
 
 ```
  public String placeAbid(String _auction_name, double _bid_amount) throws IOException, ClassNotFoundException {
@@ -236,50 +235,50 @@ Tale funzione si sviluppa attraverso i seguenti step:
     }
 ```
 
-## Altri metodi implementati
+## Other methods implemented
 
-#### Metodo sendMessage
-Il metodo *sendMessage* viene utilizzato per notificare un peer che la sua offerta è stata appena superata da una nuova proposta di valore maggiore, oppure per avvisare i partecipanti ad un asta dell'improvviso abbandono della rete da parte del creatore dell'asta e dell'eliminazione di quest'ultima.
-Questo metodo prende in input il messaggio da recapitare, il nome dell'asta a cui fa riferimento ed il tipo di messaggio da inviare.
+#### sendMessage Method
+The *sendMessage* method is used to notify a peer that its offer has just been surpassed by a new proposal of greater value, to alert participants of an auction of the sudden abandonment of the network by the creator of the auction and the elimination of this or the abandonment of the highest bidder and the consecutive reset of the auction at the basic price.
+This method takes as input the message to be delivered, the name of the auction to which it refers and the type of message to be sent.
 
-#### Metodo  checkAllAuctions
-Il metodo *checkAllAuctions* viene utilizzato per ottenere la completa lista delle aste attualmente presenti e alcune informazioni fondamentali ad esse relate, come lo stato e l'attuale migliore offerta.
+#### checkAllAuctions Method
+The *checkAllAuctions* method is used to obtain the complete list of the auctions currently present and some fundamental information related to them, such as the status and the current best offer.
 
-#### Metodo removeAnAuction
-Il metodo *removeAnAuction* permette al creatore di un asta, utilizzandone il nome ottenuto come parametro, di eliminarla.
+#### removeAnAuction Method
+The *removeAnAuction* method allows the creator of an auction, using the name obtained as a parameter, to delete it.
 
-#### Metodo exit
-Il metodo *exit* viene utilizzato per permettere ad un nodo di uscire dal sistema. Inoltre, quando un nodo lascia la rete, vengono eliminate tutte le aste da esso create, resettate tutte le aste in cui è il miglior offerente ed i partecipanti a queste vengono avvisati tramite un messaggio, grazie al metodo removeMyAuctionsAndOffers().
+#### exit Method
+The *exit* method is used to allow a node to exit the system. Furthermore, when a node leaves the network, all the auctions created by it are eliminated, all the auctions where it is the best bidder are reset and the participants in these are notified via a message, thanks to the *removeMyAuctionsAndOffers()* method.
 
-#### Metodo removeMyAuctionsAndOffers
-Il metodo *removeMyAuctionsAndOffers* viene richiamato dal metodo exit quando un peer lascia la rete e si preoccupa di eliminare tutte le aste e le offerte realizzate dal peer in questione.
+#### removeMyAuctionsAndOffers Method
+The *removeMyAuctionsAndOffers* method is called by the exit method when a peer leaves the network and takes care to eliminate all the auctions and offers made by the peer in question.
 
 
 # Testing
- I casi di test analizzati sono i seguenti:
- 
- 1. Offerta realizzata dal creatore dell'asta
- 2. Offerta realizzata dall'attuale maggior offerente
- 3. Offerta realizzata dopo la scadenza dell'asta
- 4. Rimozione di un'asta da parte del creatore
- 5. Rimozione di un'asta da parte di un semplice partecipante
- 6. Asta terminata con vincitore
- 7. Asta termianta senza vincitore
- 8. Creazione di un asta già presente nella dht
- 9. Abbandonare la rete da creatore di almeno un'asta
- 10. Abbandonare la rete da miglior offerente su un'asta
- 11. Controlla tutte le aste presenti nella dht
- 12. Asta terminata con offerte multiple 
- 13. Asta terminata con una singola offerta
- 14. Controllare lo stato di un'asta non esistente 
- 15. Controllare lo stato di un'asta senza offerenti
- 16. Controllare lo stato di un'asta attiva con offerenti
- 17. Effettuare un'offerta ad un'asta già terminata con un vincitore
- 18. Effettuare un'offerta minore del minimo prezzo
+The test cases analyzed are the following:
+ 
+  1. Bid made by the creator of the auction
+  2. Bid made by the current highest bidder
+  3. Bid made after the auction deadline
+  4. Removal of an auction by the creator
+  5. Removal of an auction by a simple participant
+  6. Auction ended with winner
+  7. Auction ended without winner
+  8. Creation of an auction already present in the dht
+  9. Leave the network as creator of at least one auction
+  10. Leave the network as the highest bidder on an auction
+  11. Check all the auctions in the dht
+  12. Auction ended with multiple bids
+  13. Auction ended with a single bid
+  14. Check the status of a non-existent auction
+  15. Check the status of an auction without bidders
+  16. Check the status of an active auction with bidders
+  17. Place a bid on an auction that has already ended with a winner
+  18. Make an offer less than the minimum price
  
 # Dockerfile
+The Dockerfile was made as follows:
 
-Il Dockerfile è stato realizzato come segue:
 ```
 FROM alpine/git as clone
 ARG url
@@ -305,43 +304,43 @@ COPY --from=builder /app/target/${artifact} /app
 CMD /usr/bin/java -jar ${artifact} -m $MASTERIP -id $ID
 ```
 
- - Data la struttura del file esso può essere utilizzato per buildare qualsiasi app con le seguenti funzionalità:
+ - Given the structure of the file it can be used to build any app with the following features:
 
-         - Il codice sorgente è ospitato su GitHub.
-         - Lo strumento di compilazione è Maven.
-         - L'output risultante è un file JAR eseguibile.
+         - The source code is hosted on GitHub.
+         - The compilation tool is Maven.
+         - The resulting output is an executable JAR file.
+         
+     The parameters present are:
 
-    I parametri presenti sono:
+         - The URL of the GitHub repository
+         - The name of the project
+         - The artifact ID and the version of Maven
 
-         - L'URL della repository di GitHub
-         - Il nome del progetto
-         - L'artifact ID e la versione di Maven
+     These parameters can be used to design a parametric build file. In Docker, parameters can be passed using the ENV or ARG options. Both are set using the ```--build-arg``` option on the command line during the docker build operation.
 
-    Tali parametri sono utilizzabili per progettare un file di build parametrico. In Docker, i parametri possono essere passati usando le opzioni ENV o ARG. Entrambi sono impostati usando l'opzione --build-arg sulla riga di comando durante l'operazione docker build.
-
- - Solitamente le fasi di build sono referenziate tramite il loro indice (a partire da 0). Sebbene ciò non rappresenti un problema, risulta utile per una migliore leggibilità del file avere qualcosa di semanticamente significativo. Docker ci consente di etichettare le fasi e fa riferimento a tali etichette nelle fasi successive.
+ - Usually the build phases are referenced through their index (starting from 0). Although this is not a problem, it is useful for better readability of the file to have something semantically significant. Docker allows us to label the phases and refers to these labels in the subsequent phases.
  
- - Inoltre, è stata inserita la variabile d'ambiente ENV TZ="Europe/Rome", per inizializzare il fuso orario con quello locale.
+ - In addition, the environment variable ENV TZ = "Europe / Rome" has been inserted, to initialize the time zone with the local one.
  
 
-# Come Buildare Auction Mechanism
+# How to Build Auction-Mechanism
 
-### In un Container Docker
-La prima operazione da eseguire nel terminale consiste nell'effettuare la build del docker container grazie alla seguente istruzione:
+### In a Container Docker
+The first operation to be performed in the terminal is the build of the docker container thanks to the following instruction:
 ```
 docker build --build-arg url=https://github.com/FrancescoMarz10/Auction-Mechanism.git --build-arg project=Auction-Mechanism --build-arg artifactid=auctionmechanism --build-arg version=1.0-jar-with-dependencies -t auctionmechanism --no-cache .
 ```
-L'esecuzione di build del docker prevede l'inserimento tramite la dicitura ```--build-arg``` dei parametri da passare in input al dockerfile.
+The build of the docker involves the insertion of the parameters to be passed in input to the dockerfile with the instruction ```--build-arg```.
 
-### Avviare il Master Peer
-Come seconda operazione dopo la build del container, bisogna avviare il master peer tramite la seguente riga di codice all'interno della linea di comando in modalità interactive (-i) e con due (-e) variabili di ambiente:
+### Start the Master Peer
+As a second operation after building the container, the master peer must be started via the following line of code within the command line in interactive (-i) mode and with two (-e) environment variables:
 ```
 docker run -i --name MASTER-PEER -e MASTERIP="127.0.0.1" -e ID=0 auctionmechanism
 ```
-La variabile d'ambiente MASTERIP è l'indirizzo ip del master peer e la variabile d'ambiente ID è l'id unico del peer. Ricorda che è necessario avviare il master peer con ID=0. 
+The environment variable MASTERIP is the IP address of the master peer and the environment variable ID is the unique id of the peer. Remember that you need to start the master peer with ID = 0.
 
-### Avviare un Peer Generico
-Una volta avviato il Master Peer è possibile avviare altri Peer grazie all'istruzione seguente e selezionando un ID univoco:
+### Start a Generic Peer
+Once the Master Peer has started, it is possible to start other Peers thanks to the following instruction and selecting a unique ID:
 ```
 docker run -i --name PEER-1 -e MASTERIP="172.17.0.2" -e ID=1 auctionmechanism
 ```
