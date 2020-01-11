@@ -69,6 +69,7 @@ The *createAuction* method takes the following values as input:
      - _description, description of the object in auction
     
 This function develops through the following steps:
+
  1. Check that an auction with the same name does not already exist
  2. Create a new auction with all parameters received.
  3. Search for the presence of the list of auction names within the dht.
