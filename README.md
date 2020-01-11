@@ -69,12 +69,11 @@ The *createAuction* method takes the following values as input:
      - _description, description of the object in auction
     
 This function develops through the following steps:
-
-    1. Check that an auction with the same name does not already exist
-    2. Create a new auction with all parameters received.
-    3. Search for the presence of the list of auction names within the dht.
-    4. If so, get this list and add the name of the auction to it and reload it in the dht.
-    5. Finally, upload the entire auction to the dht.
+ 1. Check that an auction with the same name does not already exist
+ 2. Create a new auction with all parameters received.
+ 3. Search for the presence of the list of auction names within the dht.
+ 4. If so, get this list and add the name of the auction to it and reload it in the dht.
+ 5. Finally, upload the entire auction to the dht.
     
 ##### Implementation 
 ```
@@ -104,13 +103,12 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
 The *checkAuction* method takes as input only the name of the auction to be searched with the aim of verifying its presence in the auction list and its possible status.
 
 This function develops through the following steps:
-
-    1. Search for the presence of the list of auction names within the dht
-    2. If the search obtains an affirmative result, download the entire list, otherwise create a new one to upload to the dht
-    3. Once the list is obtained, check for an auction with the name obtained as a parameter
-    4. In the event that the search results are affirmative, download the corresponding 'Auction' object from the dht
-    5. The function then checks whether the auction is active or ended, based on the expiry date and time
-    5. In both cases, it returns the status of the auction, showing the eventual winner or the highest bid and all related information
+ 1. Search for the presence of the list of auction names within the dht
+ 2. If the search obtains an affirmative result, download the entire list, otherwise create a new one to upload to the dht
+ 3. Once the list is obtained, check for an auction with the name obtained as a parameter
+ 4. In the event that the search results are affirmative, download the corresponding 'Auction' object from the dht
+ 5. The function then checks whether the auction is active or ended, based on the expiry date and time
+ 6. In both cases, it returns the status of the auction, showing the eventual winner or the highest bid and all related information
 
 ##### Implementation
 ```
@@ -165,13 +163,12 @@ public String checkAuction(String _auction_name) throws IOException, ClassNotFou
 The *placeABid* method takes as input the name of the auction and the value of the offer you wish to present.
 
 This function develops through the following steps:
-
-    1. Search for the presence of the list of auction names within the dht
-    2. If the search yields an affirmative result, download the entire list
-    3. Once the list is obtained, check for an auction with the name obtained as a parameter
-    4. If the search results are affirmative, download the corresponding auction and check if it is active or ended, based on the expiry date and time.
-    5. If the auction is still active, the bidder is not the creator or the best bidder of the auction and the new offer exceeds the current one updates all the information relating to the new proposal and its author.
-    6. Update the auction within the dht so as to make the changes visible to all peers.
+ 1. Search for the presence of the list of auction names within the dht
+ 2. If the search yields an affirmative result, download the entire list
+ 3. Once the list is obtained, check for an auction with the name obtained as a parameter
+ 4. If the search results are affirmative, download the corresponding auction and check if it is active or ended, based on the expiry date and time.
+ 5. If the auction is still active, the bidder is not the creator or the best bidder of the auction and the new offer exceeds the current one updates all the information relating to the new proposal and its author.
+ 6. Update the auction within the dht so as to make the changes visible to all peers.
 
 ##### Implementation
 
