@@ -308,14 +308,14 @@ CMD /usr/bin/java -jar ${artifact} -m $MASTERIP -id $ID
  - Given the structure of the file it can be used to build any app with the following features:
 
          - The source code is hosted on GitHub.
-         - The compilation tool is Maven.
-         - The resulting output is an executable JAR file.
+         - The compilation tool is Maven.
+         - The resulting output is an executable JAR file.
          
      The parameters present are:
 
          - The URL of the GitHub repository
-         - The name of the project
-         - The artifact ID and the version of Maven
+         - The name of the project
+         - The artifact ID and the version of Maven
 
      These parameters can be used to design a parametric build file. In Docker, parameters can be passed using the ENV or ARG options. Both are set using the ```--build-arg``` option on the command line during the docker build operation.
 
