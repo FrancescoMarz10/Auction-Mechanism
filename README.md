@@ -133,7 +133,7 @@ public String checkAuction(String _auction_name) throws IOException, ClassNotFou
                         Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
                         Date actual_date = new Date();
                         if (actual_date.after(auction.get_end_time())) {
-                            if (auction.get_reserved_price().toString().equals(auction.getMax_bid().toString())) {
+                            if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
                                 return "The Auction is ended with no winner!";
                             } else {
                                 if (auction.getBid_id() == peer_id) {
