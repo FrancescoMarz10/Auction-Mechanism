@@ -90,7 +90,7 @@ public boolean createAuction(String _auction_name, Date _end_time, double _reser
             futureGet.awaitUninterruptibly();
             if (futureGet.isSuccess()) {
                 auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
-            
+            }
             auctions_names.add(_auction_name);
             dht.put(Number160.createHash("auctions")).data(new Data(auctions_names)).start().awaitUninterruptibly();
             dht.put(Number160.createHash(_auction_name)).data(new Data(auction)).start().awaitUninterruptibly();
