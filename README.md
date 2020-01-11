@@ -42,7 +42,7 @@ The *Auction* class consists of the following instance variables:
 
 - *_auction_name, the name of the auction*
 - *_creator, the id of the peer creator of the auction*
-- *_end_time, auction expiration date and time**
+- *_end_time, auction expiration date and time*
 - *_reserved_price, the starting price*
 - *_description, description of the product put up for auction*
 - *max_bid, the best offer received*
