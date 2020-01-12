@@ -182,7 +182,16 @@ public class AuctionImplementation implements AuctionMechanism {
 
                     //Taking the actual date
                     Date actual_date = new Date();
-
+                    
+                    //Checking if the auction is ended
+                    if (actual_date.after(auction.get_end_time())) {
+                        if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
+                            return "You can't do a bid! The Auction is ended with no winner!";
+                        } else {
+                            return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
+                        }
+                    } 
+                    
                     //Checking if the peer is the creator of the auction
                     if (auction.get_creator() == peer_id) {
                         return "The creator can't do a bid!";
@@ -192,17 +201,9 @@ public class AuctionImplementation implements AuctionMechanism {
                     if (auction.getBid_id() == peer_id) {
                         return "You have already offered the highest bid!";
                     }
-
-                    //Checking if the auction is ended
-                    if (actual_date.after(auction.get_end_time())) {
-                        if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
-                            return "You can't do a bid! The Auction is ended with no winner!";
-                        } else {
-                            return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
-                        }
-
-                     //Checking if the new bid is better than the old one and updating all the variables of the auction
-                    } else if (_bid_amount > auction.getMax_bid()) {
+                    
+                    //Checking if the new bid is better than the old one and updating all the variables of the auction
+                    if (_bid_amount > auction.getMax_bid()) {
 
                         auction.setSecond_max_bid(auction.getMax_bid());
                         auction.setMax_bid(_bid_amount);
