@@ -174,41 +174,56 @@ This function develops through the following steps:
 ##### Implementation
 
 ```
- public String placeAbid(String _auction_name, double _bid_amount) throws IOException, ClassNotFoundException {
+public String placeAbid(String _auction_name, double _bid_amount) throws IOException, ClassNotFoundException {
         FutureGet futureGet = dht.get(Number160.createHash("auctions")).start();
         futureGet.awaitUninterruptibly();
-        
+
+        //Checking the presence of the names list of auctions on dht
         if (futureGet.isSuccess()) {
+
             Collection<Data> dataMapValues = futureGet.dataMap().values();
 
             if(dataMapValues.isEmpty()){
                 return null;
             }
             else{
+                //Taking the list
                 auctions_names = (ArrayList<String>) futureGet.dataMap().values().iterator().next().object();
             }
+
+            //Checking if the researched auction is in the list and so in the dht
             if (auctions_names.contains(_auction_name)) {
                 futureGet = dht.get(Number160.createHash(_auction_name)).start();
                 futureGet.awaitUninterruptibly();
 
                 if (futureGet.isSuccess()) {
+                    //Taking the auction...
                     Auction auction = (Auction) futureGet.dataMap().values().iterator().next().object();
+
+                    //Taking the actual date
                     Date actual_date = new Date();
-                    if (auction.get_creator() == peer_id) {
-                        return "The creator can't do a bid!";
-                    }
-                    if (auction.getBid_id() == peer_id) {
-                        return "You have already offered the highest bid!";
-                    }
+                    
+                    //Checking if the auction is ended
                     if (actual_date.after(auction.get_end_time())) {
-                         if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
+                        if(Double.compare(auction.get_reserved_price(),auction.getMax_bid())==0){
                             return "You can't do a bid! The Auction is ended with no winner!";
                         } else {
                             return "You can't do a bid! The Auction is ended, the winner is " + auction.getBid_id() + " with this bid: " + auction.getMax_bid() + " and the price is " + auction.getSecond_max_bid();
                         }
+                    } 
+                    
+                    //Checking if the peer is the creator of the auction
+                    if (auction.get_creator() == peer_id) {
+                        return "The creator can't do a bid!";
+                    }
 
-                     //Checking if the new bid is better than the old one and updating all the variables of the auction
-                    } else if (_bid_amount > auction.getMax_bid()) {
+                    //Checking if the peer is already the best offerer
+                    if (auction.getBid_id() == peer_id) {
+                        return "You have already offered the highest bid!";
+                    }
+                    
+                    //Checking if the new bid is better than the old one and updating all the variables of the auction
+                    if (_bid_amount > auction.getMax_bid()) {
 
                         auction.setSecond_max_bid(auction.getMax_bid());
                         auction.setMax_bid(_bid_amount);
@@ -222,8 +237,10 @@ This function develops through the following steps:
                             auction.getUsers().add(peer.peerAddress());
                             auction.setPeerAddress_bid(peer.peerAddress());
                         }
+
+                        //Putting the updated auction in the dht again
                         dht.put(Number160.createHash(_auction_name)).data(new Data(auction)).start().awaitUninterruptibly();
-                        sendMessage("The new best bid on the " + _auction_name + " auction is " + auction.getMax_bid() + " by " + auction.getBid_id(), _auction_name);
+                        sendMessage("The new best bid on the " + _auction_name + " auction is " + auction.getMax_bid() + " by " + auction.getBid_id(), _auction_name,1);
 
                         return "The auction is active until " + auction.get_end_time() + " and the highest offer is yours with: " + auction.getMax_bid();
                     } else {
@@ -232,8 +249,8 @@ This function develops through the following steps:
                 }
             }
         }
-        return null;
-    }
+       return null;
+ }
 ```
 
 ## Other methods implemented
