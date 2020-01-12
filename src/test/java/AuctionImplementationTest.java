@@ -250,9 +250,9 @@ public class AuctionImplementationTest {
     @Test
     public void M_placeABidAsCreator(){
         try {
-            Date date = new Date();
-            peer0.createAuction("Notebook MSI", new Date(Calendar.getInstance().getTimeInMillis() + 1000), 1500, "A notebook is a small, portable personal computer (PC)");
-            assertEquals("The creator can't do a bid!", peer0.placeAbid("Notebook MSI", 1500));
+           Date date = new Date();
+            peer0.createAuction("Notebook Razer", new Date(Calendar.getInstance().getTimeInMillis() + 8000), 1500, "A notebook is a small, portable personal computer (PC)");
+            assertEquals("The creator can't do a bid!", peer0.placeAbid("Notebook Razer", 1501));
         }
         catch(Exception e) {
             e.printStackTrace();
